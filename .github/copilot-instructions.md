@@ -52,6 +52,19 @@ No automated test suite exists yet. Until one is introduced:
 - Content tone: professional, technical, concise, documentation-like. Never use buzzwords or exaggerated self-promotion (see instructions.md § Tone of Voice).
 - Portfolio content is grouped by category (Software Engineering / Electrical Engineering / Research / Open Source), never by a flat technology logo wall.
 
+## Subproject Pages
+
+New projects added to `projects/*/index.html` should use the [Subproject Layout Guide](.github/SUBPROJECT_LAYOUT_GUIDE.md). The layout system (`css/subproject.css`) provides:
+
+- Consistent header/nav with the main site
+- Breadcrumb and project meta section
+- Content containers with proper spacing and hierarchy
+- Responsive grid components for features/specs
+- Link styling and call-to-action boxes
+- Full i18n support via the main site's language system
+
+**Template:** Copy the structure from [projects/net-salary-calculator/index.html](../projects/net-salary-calculator/index.html) when creating a new subproject page.
+
 ## Maintenance Matrix
 
 This matrix will grow once the site is scaffolded. Update it whenever a change in one place requires a cascading update elsewhere.
@@ -59,9 +72,10 @@ This matrix will grow once the site is scaffolded. Update it whenever a change i
 | If you change... | Also update... |
 |---|---|
 | Brand positioning, tagline, or tone rules | [instructions.md](../instructions.md) first, then any page copy that quotes it, then this file if conventions changed |
-| Site navigation / page list | Nav markup on every page (or the shared nav component, once one exists), the "Planned" structure list in [AGENTS.md](../AGENTS.md), and instructions.md's Site Structure section |
-| Color palette / theme tokens | CSS custom properties in the shared stylesheet and any hardcoded colors in inline `<style>` blocks |
+| Site navigation / page list | Nav markup on every page (header includes in both [index.html](../index.html) and subproject pages), the "Planned" structure list in [AGENTS.md](../AGENTS.md), and instructions.md's Site Structure section |
+| Color palette / theme tokens | `css/tokens.css` custom properties, then any hardcoded colors in inline `<style>` blocks; subproject pages inherit tokens automatically |
 | Motion/animation conventions | [.github/skills/premium-frontend-ui/SKILL.md](skills/premium-frontend-ui/SKILL.md) usage notes above, and any existing animation modules under `js/` |
+| Subproject layout components | `css/subproject.css`, then update [.github/SUBPROJECT_LAYOUT_GUIDE.md](.github/SUBPROJECT_LAYOUT_GUIDE.md) and test the example in [projects/net-salary-calculator/index.html](../projects/net-salary-calculator/index.html) |
 | Lint tooling used in CI | [workflows/ci.yml](workflows/ci.yml) and [workflows/copilot-setup-steps.yml](workflows/copilot-setup-steps.yml) so the agent environment matches CI |
 
 **Note:** trace actual import/registration chains (nav includes, shared partials, build config) once they exist — this table is intentionally forward-looking and should be corrected against real file paths as soon as the site is scaffolded.
