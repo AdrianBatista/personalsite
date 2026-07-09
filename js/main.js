@@ -1,6 +1,5 @@
 import { initI18n } from "./i18n.js";
 import { initMotion } from "./motion.js";
-import { initSpeedInsights } from "./speedInsights.js";
 
 function initNavToggle() {
   const toggle = document.getElementById("nav-toggle");
@@ -54,7 +53,6 @@ function initHeroPhotoFallback() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  initSpeedInsights();
   initI18n();
   initNavToggle();
   initHeaderScrollState();
