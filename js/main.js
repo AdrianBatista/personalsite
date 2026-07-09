@@ -31,9 +31,31 @@ function initHeaderScrollState() {
   window.addEventListener("scroll", setState, { passive: true });
 }
 
+function initHeroPhotoFallback() {
+  const photo = document.getElementById("hero-photo");
+  const fallback = document.getElementById("hero-photo-fallback");
+  if (!photo || !fallback) return;
+
+  const showFallback = () => {
+    photo.hidden = true;
+    fallback.hidden = false;
+  };
+
+  // The image may have already failed to load by the time this module runs
+  // (deferred scripts execute after the initial HTML parse), so the "error"
+  // event could have fired before a listener was attached. Check the
+  // already-settled state first, then listen for future failures too.
+  if (photo.complete && photo.naturalWidth === 0) {
+    showFallback();
+  } else {
+    photo.addEventListener("error", showFallback);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initI18n();
   initNavToggle();
   initHeaderScrollState();
+  initHeroPhotoFallback();
   initMotion();
 });

@@ -5,6 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Adrian Felipe Nogueira Batista — Engineer</title>
   <meta name="description" content="Electrical Engineer specialized in software development for engineering. Engineering better solutions through software.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="canonical" href="https://adrianbatista.com/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://adrianbatista.com/">
+  <meta property="og:title" content="Adrian Felipe Nogueira Batista — Electrical Engineer • Software Engineer">
+  <meta property="og:description" content="Engineering better solutions through software.">
+  <meta property="og:image" content="https://adrianbatista.com/assets/social-preview.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Adrian Felipe Nogueira Batista — Electrical Engineer • Software Engineer">
+  <meta name="twitter:description" content="Engineering better solutions through software.">
+  <meta name="twitter:image" content="https://adrianbatista.com/assets/social-preview.svg">
+
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/main.css">
 </head>
@@ -60,11 +73,26 @@
     <!-- ============ HOME / HERO ============ -->
     <section id="hero" class="hero">
       <div class="hero-inner">
-        <p class="hero-eyebrow" data-i18n="hero.eyebrow">Electrical Engineer • Software Engineer</p>
-        <h1 class="hero-name" data-i18n="hero.name">Adrian Felipe Nogueira Batista</h1>
-        <p class="hero-statement" data-i18n="hero.statement">
-          Developing software solutions for engineering, industrial processes and technical applications.
-        </p>
+        <div class="hero-text">
+          <p class="hero-eyebrow" data-i18n="hero.eyebrow">Electrical Engineer • Software Engineer</p>
+          <h1 class="hero-name" data-i18n="hero.name">Adrian Felipe Nogueira Batista</h1>
+          <p class="hero-statement" data-i18n="hero.statement">
+            Developing software solutions for engineering, industrial processes and technical applications.
+          </p>
+        </div>
+        <div class="hero-photo-wrap">
+          <!-- TODO: add the real photo file at assets/profile.jpg (square, ideally 480×480+) -->
+          <img
+            class="hero-photo"
+            id="hero-photo"
+            src="assets/profile.png"
+            alt="Adrian Felipe Nogueira Batista"
+            width="240"
+            height="240"
+            loading="eager"
+          >
+          <div class="hero-photo-fallback" id="hero-photo-fallback" hidden aria-hidden="true">AB</div>
+        </div>
       </div>
       <svg class="hero-circuit" viewBox="0 0 800 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
         <path d="M0,150 L120,150 L140,120 L260,120 L280,150 L420,150 L440,180 L560,180 L580,150 L800,150"
@@ -126,7 +154,7 @@
         <h2 class="section-heading" data-i18n="portfolio.heading">Engineering Portfolio</h2>
         <p class="section-intro" data-i18n="portfolio.intro">Projects organized by domain, not by technology.</p>
 
-        <!-- TODO: replace placeholder project cards below with real project details -->
+        <!-- Real project work at Hitachi Energy is confidential; cards below intentionally use generic, honest descriptions instead of NDA-protected specifics. -->
 
         <div class="portfolio-category">
           <h3 class="category-title" data-i18n="portfolio.categories.software.title">Software Engineering</h3>
@@ -134,16 +162,16 @@
             <article class="card">
               <h4 data-i18n="portfolio.categories.software.items.0.title">Internal Process Automation Tool</h4>
               <p data-i18n="portfolio.categories.software.items.0.desc">
-                Placeholder — a web application that replaced a manual spreadsheet-based workflow. Add real project details here.
+                Confidential internal application developed at Hitachi Energy to automate an engineering workflow. Implementation details are not publishable under company policy.
               </p>
               <span class="tag" data-i18n="portfolio.categories.software.items.0.tags">Web Application</span>
             </article>
             <article class="card">
-              <h4 data-i18n="portfolio.categories.software.items.1.title">Engineering Data API</h4>
+              <h4 data-i18n="portfolio.categories.software.items.1.title">Engineering Data Integration Tool</h4>
               <p data-i18n="portfolio.categories.software.items.1.desc">
-                Placeholder — a REST API exposing engineering datasets to internal tools. Add real project details here.
+                Confidential internal tool built to integrate and expose engineering data across teams at Hitachi Energy. Specific implementation details cannot be shared publicly.
               </p>
-              <span class="tag" data-i18n="portfolio.categories.software.items.1.tags">API</span>
+              <span class="tag" data-i18n="portfolio.categories.software.items.1.tags">Internal Tool</span>
             </article>
           </div>
         </div>
@@ -152,16 +180,16 @@
           <h3 class="category-title" data-i18n="portfolio.categories.electrical.title">Electrical Engineering</h3>
           <div class="card-grid">
             <article class="card">
-              <h4 data-i18n="portfolio.categories.electrical.items.0.title">Instrumentation Monitoring Panel</h4>
+              <h4 data-i18n="portfolio.categories.electrical.items.0.title">Instrumentation &amp; Automation Support Tool</h4>
               <p data-i18n="portfolio.categories.electrical.items.0.desc">
-                Placeholder — a supervisory panel for instrumentation signals. Add real project details here.
+                Confidential software supporting instrumentation and automation processes in an industrial environment. Developed under company NDA; details are not publishable.
               </p>
               <span class="tag" data-i18n="portfolio.categories.electrical.items.0.tags">Instrumentation</span>
             </article>
             <article class="card">
-              <h4 data-i18n="portfolio.categories.electrical.items.1.title">Embedded Control Module</h4>
+              <h4 data-i18n="portfolio.categories.electrical.items.1.title">Embedded &amp; Control Systems Contribution</h4>
               <p data-i18n="portfolio.categories.electrical.items.1.desc">
-                Placeholder — an embedded system for a specific automation task. Add real project details here.
+                Confidential contribution to embedded and control system integration for industrial equipment. Specific project details are confidential.
               </p>
               <span class="tag" data-i18n="portfolio.categories.electrical.items.1.tags">Embedded Systems</span>
             </article>
@@ -187,10 +215,9 @@
             <article class="card">
               <h4 data-i18n="portfolio.categories.opensource.items.0.title">GitHub Repositories</h4>
               <p data-i18n="portfolio.categories.opensource.items.0.desc">
-                Placeholder — link to public repositories once finalized.
+                Public repositories and personal projects.
               </p>
-              <!-- TODO: replace with real GitHub profile/repository URL -->
-              <a class="tag tag-link" href="https://github.com/" target="_blank" rel="noopener noreferrer" data-i18n="portfolio.categories.opensource.items.0.tags">GitHub</a>
+              <a class="tag tag-link" href="https://github.com/AdrianBatista" target="_blank" rel="noopener noreferrer" data-i18n="portfolio.categories.opensource.items.0.tags">GitHub</a>
             </article>
           </div>
         </div>
@@ -207,29 +234,15 @@
           <p data-i18n="publications.academic.desc">
             Undergraduate thesis, deposited in the UNESP institutional repository.
           </p>
+          <p class="thesis-title" data-i18n="publications.academic.thesisTitle">
+            "Diagnóstico de faltas incipientes em transformadores de potência baseado na análise de gases dissolvidos no óleo isolante empregando redes neurais artificiais"
+          </p>
+          <p class="thesis-summary" data-i18n="publications.academic.summary">
+            The dissolved gasses analysis in transformer's oil is a methodology used in present days to diagnostic faults in power transformers. This work's objective is to use artificial neural networks to create an alternative method of dissolved gasses analysis in transformer's oil with technical standard IEC 60599 as base. Thereby, it is proposed to analyze the data obtained with several types of network training methods to verify which method and which network configuration has better efficiency with the expected results. In that way, it was possible to achieve a 91% efficiency, indicating that the used method has potential to be used in dissolved gasses analysis in power transformers.
+          </p>
           <a class="doc-link" href="http://hdl.handle.net/11449/235665" target="_blank" rel="noopener noreferrer" data-i18n="publications.academic.linkLabel">
             View thesis repository
           </a>
-        </div>
-
-        <div class="publications-group">
-          <h3 class="category-title" data-i18n="publications.articles.title">Technical Articles</h3>
-          <ul class="doc-list">
-            <li data-i18n="publications.articles.items.0">Engineering automation with Python</li>
-            <li data-i18n="publications.articles.items.1">Industrial software architecture</li>
-            <li data-i18n="publications.articles.items.2">Building engineering applications</li>
-            <li data-i18n="publications.articles.items.3">SQL for engineering systems</li>
-          </ul>
-          <p class="placeholder-note" data-i18n="publications.articles.placeholderNote">
-            Placeholder titles — add links once articles are published.
-          </p>
-        </div>
-
-        <div class="publications-group">
-          <h3 class="category-title" data-i18n="publications.notes.title">Study Notes</h3>
-          <p class="placeholder-note" data-i18n="publications.notes.placeholderNote">
-            Placeholder — smaller notes documenting ongoing learning will be listed here.
-          </p>
         </div>
       </div>
     </section>
@@ -275,6 +288,7 @@
               <li class="chip">Electrical Engineering</li>
               <li class="chip">Industrial Automation</li>
               <li class="chip">Engineering Software</li>
+              <li class="chip">Creo Toolkit</li>
             </ul>
           </div>
 
@@ -298,26 +312,54 @@
 
         <ol class="timeline">
           <li class="timeline-item">
-            <span class="timeline-org">IFSP</span>
-            <span class="timeline-role" data-i18n="experience.items.0.role">Industrial Automation</span>
-            <span class="timeline-period" data-i18n="experience.items.0.period">Technical Education</span>
+            <div class="timeline-header">
+              <span class="timeline-org">IFSP</span>
+              <span class="timeline-role" data-i18n="experience.items.0.role">Industrial Automation</span>
+              <span class="timeline-period" data-i18n="experience.items.0.period">Jan 2014 – Jan 2015</span>
+            </div>
+            <p class="timeline-desc" data-i18n="experience.items.0.desc">
+              Technical course in Industrial Automation — foundational training in industrial control systems and automation.
+            </p>
           </li>
           <li class="timeline-item">
-            <span class="timeline-org">UNESP</span>
-            <span class="timeline-role" data-i18n="experience.items.1.role">Electrical Engineering</span>
-            <span class="timeline-period" data-i18n="experience.items.1.period">Undergraduate Degree</span>
+            <div class="timeline-header">
+              <span class="timeline-org">UNESP</span>
+              <span class="timeline-role" data-i18n="experience.items.1.role">Electrical Engineering</span>
+              <span class="timeline-period" data-i18n="experience.items.1.period">Jan 2016 – Jan 2021</span>
+            </div>
+            <p class="timeline-desc" data-i18n="experience.items.1.desc">
+              Bachelor's degree in Electrical and Electronics Engineering.
+            </p>
           </li>
           <li class="timeline-item">
-            <span class="timeline-org">Hitachi Energy</span>
-            <span class="timeline-role" data-i18n="experience.items.2.role">Engineering Internship</span>
+            <div class="timeline-header">
+              <span class="timeline-org">Hitachi Energy</span>
+              <span class="timeline-role" data-i18n="experience.items.2.role">Engineering Internship</span>
+              <span class="timeline-period" data-i18n="experience.items.2.period">Feb 2021 – Sep 2022</span>
+            </div>
+            <p class="timeline-desc" data-i18n="experience.items.2.desc">
+              Contributed to engineering projects in the transformer service department — assisted in developing and testing engineering solutions, and supported technical documentation.
+            </p>
           </li>
           <li class="timeline-item">
-            <span class="timeline-org">Hitachi Energy</span>
-            <span class="timeline-role" data-i18n="experience.items.3.role">Software Developer</span>
+            <div class="timeline-header">
+              <span class="timeline-org">Hitachi Energy</span>
+              <span class="timeline-role" data-i18n="experience.items.3.role">Mid-level Software Developer</span>
+              <span class="timeline-period" data-i18n="experience.items.3.period">Sep 2022 – Dec 2024</span>
+            </div>
+            <p class="timeline-desc" data-i18n="experience.items.3.desc">
+              Designed and developed web and desktop applications (PHP/Laravel, C#/.NET, Python/Django) with React.js interfaces, and managed SQL Server/MySQL databases to support engineering operations.
+            </p>
           </li>
           <li class="timeline-item">
-            <span class="timeline-org">Hitachi Energy</span>
-            <span class="timeline-role" data-i18n="experience.items.4.role">Senior Software Development Analyst</span>
+            <div class="timeline-header">
+              <span class="timeline-org">Hitachi Energy</span>
+              <span class="timeline-role" data-i18n="experience.items.4.role">Senior Software Development Analyst</span>
+              <span class="timeline-period" data-i18n="experience.items.4.period">Aug 2024 – Present</span>
+            </div>
+            <p class="timeline-desc" data-i18n="experience.items.4.desc">
+              Designs and implements software solutions for engineering processes, including Creo Toolkit applications that improve the power transformer design workflow, alongside web/desktop applications used by hundreds of users across the organization.
+            </p>
           </li>
         </ol>
       </div>
@@ -341,16 +383,15 @@
         <h2 class="section-heading" data-i18n="contact.heading">Contact</h2>
         <p class="section-intro" data-i18n="contact.intro">Minimal, direct.</p>
 
-        <!-- TODO: replace placeholder links with real LinkedIn, GitHub, and email -->
         <ul class="contact-list">
           <li>
-            <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" data-i18n="contact.linkedinLabel">LinkedIn</a>
+            <a href="https://www.linkedin.com/in/adrianfnb" target="_blank" rel="noopener noreferrer" data-i18n="contact.linkedinLabel">LinkedIn</a>
           </li>
           <li>
-            <a href="https://github.com/" target="_blank" rel="noopener noreferrer" data-i18n="contact.githubLabel">GitHub</a>
+            <a href="https://github.com/AdrianBatista" target="_blank" rel="noopener noreferrer" data-i18n="contact.githubLabel">GitHub</a>
           </li>
           <li>
-            <a href="mailto:contact@example.com" data-i18n="contact.emailLabel">Email</a>
+            <a href="mailto:adrianfnb@gmail.com" data-i18n="contact.emailLabel">Email</a>
           </li>
         </ul>
       </div>

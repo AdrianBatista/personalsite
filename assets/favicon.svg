@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="AFNB monogram favicon">
+  <rect width="64" height="64" rx="12" fill="#0b0d10" />
+  <path d="M4,44 L18,44 L21,38 L33,38 L36,44 L60,44"
+        fill="none" stroke="#4f9dff" stroke-width="1.5" opacity="0.45" />
+  <path d="M4,20 L24,20 L27,14 L44,14 L47,20 L60,20"
+        fill="none" stroke="#5fd88f" stroke-width="1.5" opacity="0.4" />
+  <circle cx="21" cy="38" r="2" fill="#4f9dff" opacity="0.6" />
+  <circle cx="27" cy="14" r="2" fill="#5fd88f" opacity="0.6" />
+  <text x="32" y="38" text-anchor="middle" font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, monospace"
+        font-size="22" font-weight="700" fill="#e6e9ec">AB</text>
+</svg>

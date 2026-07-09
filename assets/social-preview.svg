@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="Adrian Felipe Nogueira Batista — Electrical Engineer, Software Engineer">
+  <rect width="1200" height="630" fill="#0b0d10" />
+
+  <path d="M0,470 L180,470 L210,430 L390,430 L420,470 L630,470 L660,510 L840,510 L870,470 L1200,470"
+        fill="none" stroke="#4f9dff" stroke-width="2" opacity="0.35" />
+  <path d="M0,160 L260,160 L290,120 L520,120 L550,160 L820,160 L850,120 L1200,120"
+        fill="none" stroke="#5fd88f" stroke-width="2" opacity="0.3" />
+  <circle cx="210" cy="430" r="6" fill="#4f9dff" opacity="0.5" />
+  <circle cx="660" cy="510" r="6" fill="#4f9dff" opacity="0.5" />
+  <circle cx="290" cy="120" r="6" fill="#5fd88f" opacity="0.5" />
+  <circle cx="850" cy="120" r="6" fill="#5fd88f" opacity="0.5" />
+
+  <text x="90" y="270" font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, monospace"
+        font-size="30" fill="#5fd88f">Electrical Engineer &#8226; Software Engineer</text>
+  <text x="90" y="340" font-family="'JetBrains Mono', 'SFMono-Regular', Consolas, monospace"
+        font-size="56" font-weight="700" fill="#e6e9ec">Adrian Felipe Nogueira Batista</text>
+  <text x="90" y="400" font-family="-apple-system, 'Segoe UI', Roboto, sans-serif"
+        font-size="26" fill="#a3adb8">Engineering better solutions through software.</text>
+</svg>

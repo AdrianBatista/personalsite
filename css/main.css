@@ -230,6 +230,14 @@ ol {
   max-width: var(--content-max-width);
   margin: 0 auto;
   padding: 0 var(--space-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xl);
+}
+
+.hero-text {
+  min-width: 0;
 }
 
 .hero-eyebrow {
@@ -250,6 +258,52 @@ ol {
   max-width: 34rem;
   font-size: var(--font-size-md);
   color: var(--text-secondary);
+}
+
+.hero-photo-wrap {
+  position: relative;
+  flex: 0 0 auto;
+  width: 240px;
+  height: 240px;
+}
+
+.hero-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--accent-blue-dim);
+}
+
+.hero-photo-fallback {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--accent-blue-dim);
+  background: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xl);
+  color: var(--accent-green);
+}
+
+.hero-photo-fallback[hidden] {
+  display: none;
+}
+
+@media (max-width: 48rem) {
+  .hero-inner {
+    flex-direction: column-reverse;
+    text-align: center;
+    gap: var(--space-lg);
+  }
+
+  .hero-photo-wrap {
+    width: 160px;
+    height: 160px;
+  }
 }
 
 .hero-circuit {
@@ -356,6 +410,18 @@ ol {
   margin-top: var(--space-2xs);
 }
 
+.thesis-title {
+  color: var(--text-primary);
+  font-style: italic;
+  margin-top: var(--space-sm);
+}
+
+.thesis-summary {
+  max-width: 42rem;
+  margin-top: var(--space-2xs);
+  font-size: var(--font-size-sm);
+}
+
 .doc-list li {
   color: var(--text-secondary);
   padding: var(--space-3xs) 0;
@@ -407,13 +473,19 @@ ol {
 
 .timeline-item {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-sm);
+  flex-direction: column;
+  gap: var(--space-2xs);
   padding: var(--space-sm);
   border-left: 2px solid var(--accent-green-dim);
   background: var(--bg-elevated);
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.timeline-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-sm);
 }
 
 .timeline-org {
@@ -431,6 +503,11 @@ ol {
   color: var(--text-muted);
   font-size: var(--font-size-sm);
   margin-left: auto;
+}
+
+.timeline-desc {
+  max-width: 42rem;
+  font-size: var(--font-size-sm);
 }
 
 /* ---------- Philosophy ---------- */

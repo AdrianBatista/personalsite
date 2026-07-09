@@ -65,14 +65,14 @@ const translations = {
           title: "Software Engineering",
           items: {
             0: {
-              title: "Internal Process Automation Tool",
-              desc: "Placeholder — a web application that replaced a manual spreadsheet-based workflow. Add real project details here.",
-              tags: "Web Application",
+              title: "Web & Desktop Applications for Engineering Operations",
+              desc: "Full-stack applications developed in PHP/Laravel, C#/.NET, and Python/Django with React.js frontends and SQL Server/MySQL databases. Built to support engineering teams — automating workflows, integrating technical data, and improving operational efficiency.",
+              tags: "Full-Stack Development",
             },
             1: {
-              title: "Engineering Data API",
-              desc: "Placeholder — a REST API exposing engineering datasets to internal tools. Add real project details here.",
-              tags: "API",
+              title: "Creo Toolkit Applications",
+              desc: "Specialized software solutions built with Creo Toolkit to improve power transformer design workflows. Deployed across hundreds of users in the organization, bridging CAD automation and engineering processes.",
+              tags: "CAD Integration",
             },
           },
         },
@@ -80,14 +80,14 @@ const translations = {
           title: "Electrical Engineering",
           items: {
             0: {
-              title: "Instrumentation Monitoring Panel",
-              desc: "Placeholder — a supervisory panel for instrumentation signals. Add real project details here.",
-              tags: "Instrumentation",
+              title: "Industrial Automation & Control Systems",
+              desc: "Technical foundation in industrial automation — control systems design, instrumentation integration, and PLC-based process automation. Early career focus on bridging hardware and software in automated industrial environments.",
+              tags: "Industrial Control",
             },
             1: {
-              title: "Embedded Control Module",
-              desc: "Placeholder — an embedded system for a specific automation task. Add real project details here.",
-              tags: "Embedded Systems",
+              title: "Power Transformer Engineering & Analysis",
+              desc: "Engineering support for power transformers — technical documentation, failure analysis, design optimization, and testing workflows. Applied AI/neural networks methodology for dissolved gas analysis (DGA) diagnostic systems.",
+              tags: "Power Systems",
             },
           },
         },
@@ -105,8 +105,8 @@ const translations = {
           title: "Open Source",
           items: {
             0: {
-              title: "GitHub Repositories",
-              desc: "Placeholder — link to public repositories once finalized.",
+              title: "Personal Projects & Contributions",
+              desc: "Public repositories on GitHub showcasing technical experiments, utilities, and contributions to engineering-focused projects.",
               tags: "GitHub",
             },
           },
@@ -119,22 +119,13 @@ const translations = {
         title: "Academic",
         desc: "Undergraduate thesis, deposited in the UNESP institutional repository.",
         linkLabel: "View thesis repository",
+        thesisTitle:
+          "\"Diagnóstico de faltas incipientes em transformadores de potência baseado na análise de gases dissolvidos no óleo isolante empregando redes neurais artificiais\"",
+        summary:
+          "The dissolved gasses analysis in transformer's oil is a methodology used in present days to diagnostic faults in power transformers. This work's objective is to use artificial neural networks to create an alternative method of dissolved gasses analysis in transformer's oil with technical standard IEC 60599 as base. Thereby, it is proposed to analyze the data obtained with several types of network training methods to verify which method and which network configuration has better efficiency with the expected results. In that way, it was possible to achieve a 91% efficiency, indicating that the used method has potential to be used in dissolved gasses analysis in power transformers.",
       },
-      articles: {
-        title: "Technical Articles",
-        items: {
-          0: "Engineering automation with Python",
-          1: "Industrial software architecture",
-          2: "Building engineering applications",
-          3: "SQL for engineering systems",
-        },
-        placeholderNote: "Placeholder titles — add links once articles are published.",
-      },
-      notes: {
-        title: "Study Notes",
-        placeholderNote:
-          "Placeholder — smaller notes documenting ongoing learning will be listed here.",
-      },
+      articles: {},
+      notes: {},
     },
     technologies: {
       heading: "Technologies",
@@ -151,11 +142,31 @@ const translations = {
       heading: "Experience",
       intro: "A timeline, not a résumé.",
       items: {
-        0: { role: "Industrial Automation", period: "Technical Education" },
-        1: { role: "Electrical Engineering", period: "Undergraduate Degree" },
-        2: { role: "Engineering Internship" },
-        3: { role: "Software Developer" },
-        4: { role: "Senior Software Development Analyst" },
+        0: {
+          role: "Industrial Automation",
+          period: "Jan 2014 – Jan 2015",
+          desc: "Technical course in Industrial Automation — foundational training in industrial control systems and automation.",
+        },
+        1: {
+          role: "Electrical Engineering",
+          period: "Jan 2016 – Jan 2021",
+          desc: "Bachelor's degree in Electrical and Electronics Engineering.",
+        },
+        2: {
+          role: "Engineering Internship",
+          period: "Feb 2021 – Sep 2022",
+          desc: "Contributed to engineering projects in the transformer service department — assisted in developing and testing engineering solutions, and supported technical documentation.",
+        },
+        3: {
+          role: "Mid-level Software Developer",
+          period: "Sep 2022 – Dec 2024",
+          desc: "Designed and developed web and desktop applications (PHP/Laravel, C#/.NET, Python/Django) with React.js interfaces, and managed SQL Server/MySQL databases to support engineering operations.",
+        },
+        4: {
+          role: "Senior Software Development Analyst",
+          period: "Aug 2024 – Present",
+          desc: "Designs and implements software solutions for engineering processes, including Creo Toolkit applications that improve the power transformer design workflow, alongside web/desktop applications used by hundreds of users across the organization.",
+        },
       },
     },
     philosophy: {
@@ -227,14 +238,14 @@ const translations = {
           title: "Engenharia de Software",
           items: {
             0: {
-              title: "Ferramenta de Automação de Processos Internos",
-              desc: "Placeholder — uma aplicação web que substituiu um processo manual baseado em planilhas. Adicionar detalhes reais do projeto aqui.",
-              tags: "Aplicação Web",
+              title: "Aplicações Web e Desktop para Operações de Engenharia",
+              desc: "Aplicações full-stack desenvolvidas em PHP/Laravel, C#/.NET e Python/Django com frontends React.js e bancos de dados SQL Server/MySQL. Construídas para suportar equipes de engenharia — automatizando fluxos, integrando dados técnicos e melhorando eficiência operacional.",
+              tags: "Desenvolvimento Full-Stack",
             },
             1: {
-              title: "API de Dados de Engenharia",
-              desc: "Placeholder — uma API REST que expõe dados de engenharia para ferramentas internas. Adicionar detalhes reais do projeto aqui.",
-              tags: "API",
+              title: "Aplicações Creo Toolkit",
+              desc: "Soluções de software especializadas construídas com Creo Toolkit para melhorar fluxos de design de transformadores de potência. Implantadas em centenas de usuários na organização, conectando automação CAD e processos de engenharia.",
+              tags: "Integração CAD",
             },
           },
         },
@@ -242,14 +253,14 @@ const translations = {
           title: "Engenharia Elétrica",
           items: {
             0: {
-              title: "Painel de Monitoramento de Instrumentação",
-              desc: "Placeholder — um painel supervisório para sinais de instrumentação. Adicionar detalhes reais do projeto aqui.",
-              tags: "Instrumentação",
+              title: "Automação Industrial & Sistemas de Controle",
+              desc: "Base técnica em automação industrial — design de sistemas de controle, integração de instrumentação e automação de processos baseada em CLPs. Foco em conectar hardware e software em ambientes industriais automatizados.",
+              tags: "Controle Industrial",
             },
             1: {
-              title: "Módulo de Controle Embarcado",
-              desc: "Placeholder — um sistema embarcado para uma tarefa específica de automação. Adicionar detalhes reais do projeto aqui.",
-              tags: "Sistemas Embarcados",
+              title: "Engenharia & Análise de Transformadores de Potência",
+              desc: "Suporte técnico em transformadores de potência — documentação técnica, análise de falhas, otimização de design e fluxos de testes. Aplicação de metodologia com IA/redes neurais para sistemas de diagnóstico por análise de gases dissolvidos (DGA).",
+              tags: "Sistemas de Potência",
             },
           },
         },
@@ -267,8 +278,8 @@ const translations = {
           title: "Código Aberto",
           items: {
             0: {
-              title: "Repositórios no GitHub",
-              desc: "Placeholder — link para repositórios públicos assim que finalizados.",
+              title: "Projetos Pessoais & Contribuições",
+              desc: "Repositórios públicos no GitHub apresentando experimentos técnicos, utilitários e contribuições em projetos focados em engenharia.",
               tags: "GitHub",
             },
           },
@@ -281,22 +292,13 @@ const translations = {
         title: "Acadêmico",
         desc: "Trabalho de conclusão de curso, depositado no repositório institucional da UNESP.",
         linkLabel: "Ver repositório do TCC",
+        thesisTitle:
+          "\"Diagnóstico de faltas incipientes em transformadores de potência baseado na análise de gases dissolvidos no óleo isolante empregando redes neurais artificiais\"",
+        summary:
+          "A análise de gases dissolvidos no óleo isolante é uma metodologia utilizada atualmente para diagnosticar falhas em transformadores de potência. Este trabalho tem como objetivo utilizar redes neurais artificiais para criar um método alternativo de análise de gases dissolvidos no óleo do transformador, tendo como base a norma técnica IEC 60599. Assim, propõe-se analisar os dados obtidos com diversos métodos de treinamento de rede, verificando qual método e qual configuração de rede apresenta melhor eficiência frente aos resultados esperados. Dessa forma, foi possível atingir uma eficiência de 91%, indicando que o método utilizado tem potencial para ser aplicado na análise de gases dissolvidos em transformadores de potência.",
       },
-      articles: {
-        title: "Artigos Técnicos",
-        items: {
-          0: "Automação de engenharia com Python",
-          1: "Arquitetura de software industrial",
-          2: "Construindo aplicações de engenharia",
-          3: "SQL para sistemas de engenharia",
-        },
-        placeholderNote: "Títulos placeholder — adicionar links quando os artigos forem publicados.",
-      },
-      notes: {
-        title: "Notas de Estudo",
-        placeholderNote:
-          "Placeholder — notas menores documentando aprendizado contínuo serão listadas aqui.",
-      },
+      articles: {},
+      notes: {},
     },
     technologies: {
       heading: "Tecnologias",
@@ -313,11 +315,31 @@ const translations = {
       heading: "Experiência",
       intro: "Uma linha do tempo, não um currículo.",
       items: {
-        0: { role: "Automação Industrial", period: "Educação Técnica" },
-        1: { role: "Engenharia Elétrica", period: "Graduação" },
-        2: { role: "Estágio em Engenharia" },
-        3: { role: "Desenvolvedor de Software" },
-        4: { role: "Analista Sênior de Desenvolvimento de Software" },
+        0: {
+          role: "Automação Industrial",
+          period: "Jan 2014 – Jan 2015",
+          desc: "Curso técnico em Automação Industrial — formação inicial em sistemas de controle industrial e automação.",
+        },
+        1: {
+          role: "Engenharia Elétrica",
+          period: "Jan 2016 – Jan 2021",
+          desc: "Bacharelado em Engenharia Elétrica e Eletrônica.",
+        },
+        2: {
+          role: "Estágio em Engenharia",
+          period: "Fev 2021 – Set 2022",
+          desc: "Contribuiu com projetos de engenharia no departamento de serviços de transformadores — auxiliou no desenvolvimento e teste de soluções de engenharia e apoiou a documentação técnica.",
+        },
+        3: {
+          role: "Desenvolvedor de Software Pleno",
+          period: "Set 2022 – Dez 2024",
+          desc: "Projetou e desenvolveu aplicações web e desktop (PHP/Laravel, C#/.NET, Python/Django) com interfaces em React.js, e administrou bancos de dados SQL Server/MySQL para apoiar operações de engenharia.",
+        },
+        4: {
+          role: "Analista Sênior de Desenvolvimento de Software",
+          period: "Ago 2024 – Presente",
+          desc: "Projeta e implementa soluções de software para processos de engenharia, incluindo aplicações em Creo Toolkit que aprimoram o fluxo de projeto de transformadores de potência, além de aplicações web/desktop utilizadas por centenas de usuários na organização.",
+        },
       },
     },
     philosophy: {
