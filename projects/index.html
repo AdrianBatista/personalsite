@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects — Adrian Felipe Nogueira Batista</title>
+  <meta name="description" content="Software engineering projects, tools, and applications developed for engineering workflows and industrial processes.">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/subproject.css">
+  <style>
+    /* Projects listing grid */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+
+    .project-card {
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-lg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-elevated);
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .project-card:hover,
+    .project-card:focus-visible {
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .project-card:focus-visible {
+      outline: 2px solid var(--accent-blue);
+      outline-offset: 2px;
+    }
+
+    .project-card-category {
+      font-size: var(--font-size-sm);
+      color: var(--accent-green);
+      margin-bottom: var(--space-xs);
+      font-weight: 500;
+    }
+
+    .project-card-title {
+      font-size: var(--font-size-lg);
+      color: var(--text-primary);
+      margin-bottom: var(--space-sm);
+      font-weight: 600;
+    }
+
+    .project-card-description {
+      font-size: var(--font-size-md);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-md);
+      flex-grow: 1;
+      line-height: 1.5;
+    }
+
+    .project-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2xs);
+      margin-top: auto;
+    }
+
+    .project-card-tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-3xs) var(--space-xs);
+    }
+
+    .projects-empty {
+      text-align: center;
+      padding: var(--space-2xl) var(--space-lg);
+      color: var(--text-secondary);
+    }
+
+    .projects-empty p {
+      font-size: var(--font-size-md);
+    }
+
+    @media (max-width: 640px) {
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <script type="module" src="../js/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="nav.skip">Skip to content</a>
+
+  <!-- ============ HEADER (shared with main site) ============ -->
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+      <a class="brand" href="../index.html#hero" data-i18n="nav.brand">AFNB</a>
+
+      <button
+        class="nav-toggle"
+        id="nav-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-nav"
+        data-i18n-aria-label="nav.menuToggleLabel"
+        aria-label="Toggle navigation menu"
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <ul>
+          <li><a href="../index.html#about" data-i18n="nav.about">About</a></li>
+          <li><a href="../index.html#portfolio" data-i18n="nav.portfolio">Portfolio</a></li>
+          <li><a href="../index.html#publications" data-i18n="nav.publications">Publications</a></li>
+          <li><a href="../index.html#technologies" data-i18n="nav.technologies">Technologies</a></li>
+          <li><a href="../index.html#experience" data-i18n="nav.experience">Experience</a></li>
+          <li><a href="../index.html#philosophy" data-i18n="nav.philosophy">Philosophy</a></li>
+          <li><a href="../index.html#contact" data-i18n="nav.contact">Contact</a></li>
+        </ul>
+
+        <button
+          class="lang-toggle"
+          id="lang-toggle"
+          type="button"
+          data-i18n-aria-label="nav.langToggleLabel"
+          aria-label="Switch language"
+        >
+          <span class="lang-option" data-lang-option="en">EN</span>
+          <span class="lang-sep" aria-hidden="true">/</span>
+          <span class="lang-option" data-lang-option="pt">PT</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ============ PROJECTS HUB HEADER ============ -->
+    <section class="subproject-meta">
+      <div class="subproject-meta-inner">
+        <div class="subproject-breadcrumb">
+          <a href="../index.html#portfolio">Portfolio</a>
+          <span>/</span>
+          <span data-i18n="projects.breadcrumb">Projects</span>
+        </div>
+
+        <div class="subproject-title-wrap">
+          <div class="subproject-heading">
+            <h1 class="subproject-title" data-i18n="projects.title">Projects</h1>
+            <p class="subproject-subtitle" data-i18n="projects.description">Software applications, tools, and utilities developed to solve engineering and technical challenges.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PROJECTS LISTING ============ -->
+    <section class="subproject-content">
+      <div class="subproject-content-inner">
+        <div class="projects-grid" id="projects-grid">
+          <!-- Projects will be rendered here by JavaScript -->
+        </div>
+
+        <div class="projects-empty" id="projects-empty" hidden>
+          <p data-i18n="projects.empty">No projects available yet.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="section-inner">
+      <p data-i18n="footer.tagline">Engineering better solutions through software.</p>
+      <p class="footer-rights" data-i18n="footer.rights">© 2026 Adrian Felipe Nogueira Batista.</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    /**
+     * Projects hub — dynamically load and display project listings.
+     * Project metadata is defined in the projects index below.
+     */
+
+    const PROJECTS_DATA = {
+      netSalaryCalculator: {
+        id: "net-salary-calculator",
+        titleKey: "projects.items.netSalaryCalculator.title",
+        descKey: "projects.items.netSalaryCalculator.desc",
+        categoryKey: "projects.items.netSalaryCalculator.category",
+        tagsKeys: [
+          "projects.items.netSalaryCalculator.tags.0",
+          "projects.items.netSalaryCalculator.tags.1",
+          "projects.items.netSalaryCalculator.tags.2",
+        ],
+        href: "/projects/net-salary-calculator/index.html",
+      },
+      // TODO: Add more projects here as they are created
+      // Example:
+      // projectName: {
+      //   id: "project-slug",
+      //   titleKey: "projects.items.projectName.title",
+      //   descKey: "projects.items.projectName.desc",
+      //   categoryKey: "projects.items.projectName.category",
+      //   tagsKeys: ["projects.items.projectName.tags.0", ...],
+      //   href: "project-slug/index.html",
+      // },
+    };
+
+    /**
+     * Render projects grid
+     */
+    function renderProjects() {
+      const grid = document.getElementById("projects-grid");
+      const empty = document.getElementById("projects-empty");
+
+      const projects = Object.values(PROJECTS_DATA);
+
+      if (projects.length === 0) {
+        grid.hidden = true;
+        empty.hidden = false;
+        return;
+      }
+
+      grid.hidden = false;
+      empty.hidden = true;
+
+      grid.innerHTML = projects
+        .map((project) => {
+          const titleEl = document.createElement("span");
+          titleEl.setAttribute("data-i18n", project.titleKey);
+
+          const descEl = document.createElement("span");
+          descEl.setAttribute("data-i18n", project.descKey);
+
+          const categoryEl = document.createElement("span");
+          categoryEl.setAttribute("data-i18n", project.categoryKey);
+
+          return `
+            <a href="${project.href}" class="project-card">
+              <div class="project-card-category" data-i18n="${project.categoryKey}"></div>
+              <h2 class="project-card-title" data-i18n="${project.titleKey}"></h2>
+              <p class="project-card-description" data-i18n="${project.descKey}"></p>
+              <div class="project-card-tags">
+                ${project.tagsKeys.map((key) => `<span class="project-card-tag" data-i18n="${key}"></span>`).join("")}
+              </div>
+            </a>
+          `;
+        })
+        .join("");
+
+      // Re-run i18n to translate all inserted elements
+      if (window.applyTranslations) {
+        window.applyTranslations();
+      }
+    }
+
+    // Render projects when DOM is ready
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", renderProjects);
+    } else {
+      renderProjects();
+    }
+
+    // Also re-render when language changes (captured by the language toggle)
+    document.addEventListener("languageChange", renderProjects);
+  </script>
+</body>
+</html>

@@ -127,6 +127,24 @@ const translations = {
       articles: {},
       notes: {},
     },
+    projects: {
+      breadcrumb: "Projects",
+      title: "Projects",
+      description: "Software applications, tools, and utilities developed to solve engineering and technical challenges.",
+      empty: "No projects available yet.",
+      items: {
+        netSalaryCalculator: {
+          title: "Net Salary Calculator",
+          desc: "A web application for calculating net salary based on gross income, taxes, and deductions.",
+          category: "Software Engineering",
+          tags: {
+            0: "JavaScript",
+            1: "Web App",
+            2: "Finance",
+          },
+        },
+      },
+    },
     technologies: {
       heading: "Technologies",
       intro: "A toolkit built for engineering environments — developed and applied across industrial automation, power systems, and enterprise software.",
@@ -299,6 +317,24 @@ const translations = {
       },
       articles: {},
       notes: {},
+    },
+    projects: {
+      breadcrumb: "Projetos",
+      title: "Projetos",
+      description: "Aplicações de software, ferramentas e utilitários desenvolvidos para resolver desafios de engenharia e técnicos.",
+      empty: "Nenhum projeto disponível no momento.",
+      items: {
+        netSalaryCalculator: {
+          title: "Calculadora de Salário Líquido",
+          desc: "Uma aplicação web para calcular salário líquido baseado em rendimento bruto, impostos e deduções.",
+          category: "Engenharia de Software",
+          tags: {
+            0: "JavaScript",
+            1: "Web App",
+            2: "Finanças",
+          },
+        },
+      },
     },
     technologies: {
       heading: "Tecnologias",
