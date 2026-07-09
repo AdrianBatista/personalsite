@@ -144,6 +144,24 @@
                 <span class="percentage-symbol">%</span>
               </div>
             </div>
+
+            <!-- Other Deductions Input -->
+            <div class="input-group">
+              <label for="other-deductions" data-i18n="project.netSalaryCalculator.section.otherDeductionsLabel">Other Deductions</label>
+              <div class="input-wrapper">
+                <span class="currency-symbol" data-i18n="project.netSalaryCalculator.section.currency">R$</span>
+                <input
+                  type="number"
+                  id="other-deductions"
+                  class="calculator-input"
+                  placeholder="Enter any other deductions"
+                  data-i18n-placeholder="project.netSalaryCalculator.section.otherDeductionsPlaceholder"
+                  min="0"
+                  step="0.01"
+                  value="0"
+                >
+              </div>
+            </div>
           </div>
 
           <!-- Results Display -->
@@ -169,6 +187,53 @@
               <div class="result-value">
                 <span class="currency-symbol" data-i18n="project.netSalaryCalculator.section.currency">R$</span>
                 <span id="private-retirement-value">0,00</span>
+              </div>
+            </div>
+
+            <div class="result-item">
+              <label data-i18n="project.netSalaryCalculator.section.otherDeductionsLabel">Other Deductions</label>
+              <div class="result-value">
+                <span class="currency-symbol" data-i18n="project.netSalaryCalculator.section.currency">R$</span>
+                <span id="other-deductions-value">0,00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 2: IRRF Income Tax -->
+        <div class="calculator-stage">
+          <h2 class="stage-title" data-i18n="project.netSalaryCalculator.section.stage2">Stage 2: Income Tax (IRRF)</h2>
+
+          <div class="calculator-results">
+            <div class="result-item result-item-primary">
+              <label data-i18n="project.netSalaryCalculator.section.irffBaseLabel">IRRF Base</label>
+              <div class="result-value">
+                <span class="currency-symbol" data-i18n="project.netSalaryCalculator.section.currency">R$</span>
+                <span id="irrf-base-value">0,00</span>
+              </div>
+            </div>
+
+            <div class="result-item result-item-highlight">
+              <label data-i18n="project.netSalaryCalculator.section.irffLabel">IRRF (Income Tax Withheld)</label>
+              <div class="result-value">
+                <span class="currency-symbol" data-i18n="project.netSalaryCalculator.section.currency">R$</span>
+                <span id="irrf-value">0,00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 3: Net Salary -->
+        <div class="calculator-stage stage-final">
+          <h2 class="stage-title" data-i18n="project.netSalaryCalculator.section.stage3">Stage 3: Net Salary</h2>
+
+          <div class="calculator-results result-final">
+            <div class="result-item result-item-net-salary">
+              <label data-i18n="project.netSalaryCalculator.section.netSalaryLabel">Net Salary</label>
+              <p class="result-description" data-i18n="project.netSalaryCalculator.section.netSalaryDescription">Gross Salary - INSS - IRRF</p>
+              <div class="result-value result-value-large">
+                <span class="currency-symbol" data-i18n="project.netSalaryCalculator.section.currency">R$</span>
+                <span id="net-salary-value">0,00</span>
               </div>
             </div>
           </div>

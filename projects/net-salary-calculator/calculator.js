@@ -22,6 +22,18 @@ const INSS_BRACKETS = [
 const FGTS_RATE = 0.08;
 
 /**
+ * IRRF brackets and rates for 2026
+ * Progressiva (progressive) calculation with deduction
+ */
+const IRRF_BRACKETS = [
+  { limit: 2428.80, rate: 0, deduction: 0 },
+  { limit: 2826.65, rate: 0.075, deduction: 182.16 },
+  { limit: 3751.05, rate: 0.15, deduction: 394.16 },
+  { limit: 4664.68, rate: 0.225, deduction: 675.49 },
+  { limit: Infinity, rate: 0.275, deduction: 908.73 },
+];
+
+/**
  * Calculate INSS based on progressive brackets
  * @param {number} grossSalary
  * @returns {number} INSS amount
@@ -67,6 +79,40 @@ function calculatePrivateRetirement(grossSalary, percentageRate) {
 }
 
 /**
+ * Calculate IRRF based on progressive brackets
+ * IRRF is calculated on the base (gross salary - INSS - private retirement)
+ * @param {number} irffBase
+ * @returns {number} IRRF amount
+ */
+function calculateIRRF(irffBase) {
+  if (irffBase <= 0) return 0;
+
+  for (const bracket of IRRF_BRACKETS) {
+    if (irffBase <= bracket.limit) {
+      return Math.max(0, irffBase * bracket.rate - bracket.deduction);
+    }
+  }
+
+  return 0;
+}
+
+/**
+ * Calculate Net Salary
+ * Net Salary = Gross Salary - INSS - IRRF - Private Retirement - Other Deductions
+ * (Note: FGTS is not deducted from net salary, it's a separate employer contribution)
+ * @param {number} grossSalary
+ * @param {number} inss
+ * @param {number} irrf
+ * @param {number} privateRetirement
+ * @param {number} otherDeductions
+ * @returns {number} Net Salary amount
+ */
+function calculateNetSalary(grossSalary, inss, irrf, privateRetirement, otherDeductions) {
+  if (grossSalary <= 0) return 0;
+  return Math.max(0, grossSalary - inss - irrf - privateRetirement - otherDeductions);
+}
+
+/**
  * Format number to Brazilian currency display
  * @param {number} value
  * @returns {string}
@@ -86,10 +132,12 @@ function updateCalculations() {
   const privateRetirementPercentageInput = document.getElementById(
     "private-retirement-percentage"
   );
+  const otherDeductionsInput = document.getElementById("other-deductions");
 
   const grossSalary = parseFloat(grossSalaryInput.value) || 0;
   const privateRetirementPercentage =
     parseFloat(privateRetirementPercentageInput.value) || 0;
+  const otherDeductions = parseFloat(otherDeductionsInput.value) || 0;
 
   // Calculate deductions
   const inss = calculateINSS(grossSalary);
@@ -99,11 +147,25 @@ function updateCalculations() {
     privateRetirementPercentage
   );
 
+  // Calculate IRRF base (gross salary - INSS - private retirement)
+  const irffBase = grossSalary - inss - privateRetirement;
+  const irrf = calculateIRRF(irffBase);
+
+  // Calculate Net Salary (gross salary - INSS - IRRF - Private Retirement - Other Deductions)
+  const netSalary = calculateNetSalary(grossSalary, inss, irrf, privateRetirement, otherDeductions);
+
   // Update DOM
   document.getElementById("inss-value").textContent = formatCurrency(inss);
   document.getElementById("fgts-value").textContent = formatCurrency(fgts);
   document.getElementById("private-retirement-value").textContent =
     formatCurrency(privateRetirement);
+  document.getElementById("other-deductions-value").textContent =
+    formatCurrency(otherDeductions);
+  document.getElementById("irrf-base-value").textContent =
+    formatCurrency(irffBase);
+  document.getElementById("irrf-value").textContent = formatCurrency(irrf);
+  document.getElementById("net-salary-value").textContent =
+    formatCurrency(netSalary);
 }
 
 /**
@@ -115,8 +177,9 @@ export function initCalculator() {
   const privateRetirementPercentageInput = document.getElementById(
     "private-retirement-percentage"
   );
+  const otherDeductionsInput = document.getElementById("other-deductions");
 
-  if (!grossSalaryInput || !privateRetirementPercentageInput) {
+  if (!grossSalaryInput || !privateRetirementPercentageInput || !otherDeductionsInput) {
     console.warn("Calculator inputs not found in DOM");
     return;
   }
@@ -124,6 +187,7 @@ export function initCalculator() {
   // Attach event listeners
   grossSalaryInput.addEventListener("input", updateCalculations);
   privateRetirementPercentageInput.addEventListener("input", updateCalculations);
+  otherDeductionsInput.addEventListener("input", updateCalculations);
 
   // Initial calculation
   updateCalculations();
@@ -132,4 +196,4 @@ export function initCalculator() {
 /**
  * Export calculation functions for testing or external use
  */
-export { calculateINSS, calculateFGTS, calculatePrivateRetirement, formatCurrency };
+export { calculateINSS, calculateFGTS, calculatePrivateRetirement, calculateIRRF, calculateNetSalary, formatCurrency };
