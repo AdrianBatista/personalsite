@@ -13,7 +13,16 @@
   <script type="module">
     import { registerTranslations } from "../../js/i18n.js";
     import projectTranslations from "../../projects/net-salary-calculator/i18n.js";
+    import { initCalculator } from "../../projects/net-salary-calculator/calculator.js";
+    
     registerTranslations(projectTranslations);
+    
+    // Initialize calculator when DOM is ready
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initCalculator);
+    } else {
+      initCalculator();
+    }
   </script>
   <script type="module" src="../../js/main.js"></script>
 </head>
@@ -94,6 +103,76 @@
     <!-- ============ PROJECT CONTENT ============ -->
     <section class="subproject-content">
       <div class="subproject-content-inner">
+        <!-- Stage 1: Mandatory Deductions -->
+        <div class="calculator-stage">
+          <h2 class="stage-title" data-i18n="project.netSalaryCalculator.section.stage1">Stage 1: Mandatory Deductions</h2>
+
+          <div class="calculator-inputs">
+            <!-- Gross Salary Input -->
+            <div class="input-group">
+              <label for="gross-salary" data-i18n="project.netSalaryCalculator.section.grossSalaryLabel">Gross Salary</label>
+              <div class="input-wrapper">
+                <span class="currency-symbol" data-i18n="project.netSalaryCalculator.section.currency">R$</span>
+                <input
+                  type="number"
+                  id="gross-salary"
+                  class="calculator-input"
+                  placeholder="Enter your gross salary"
+                  data-i18n-placeholder="project.netSalaryCalculator.section.grossSalaryPlaceholder"
+                  min="0"
+                  step="0.01"
+                  value="0"
+                >
+              </div>
+            </div>
+
+            <!-- Private Retirement Percentage Input -->
+            <div class="input-group">
+              <label for="private-retirement-percentage" data-i18n="project.netSalaryCalculator.section.privateRetirementPercentageLabel">Private Retirement Percentage (%)</label>
+              <div class="input-wrapper">
+                <input
+                  type="number"
+                  id="private-retirement-percentage"
+                  class="calculator-input"
+                  placeholder="Enter the percentage"
+                  data-i18n-placeholder="project.netSalaryCalculator.section.privateRetirementPercentagePlaceholder"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  value="0"
+                >
+                <span class="percentage-symbol">%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Results Display -->
+          <div class="calculator-results">
+            <div class="result-item">
+              <label data-i18n="project.netSalaryCalculator.section.inssLabel">INSS (Social Security)</label>
+              <div class="result-value">
+                <span class="currency-symbol" data-i18n="project.netSalaryCalculator.section.currency">R$</span>
+                <span id="inss-value">0,00</span>
+              </div>
+            </div>
+
+            <div class="result-item">
+              <label data-i18n="project.netSalaryCalculator.section.fgtsLabel">FGTS (Fund)</label>
+              <div class="result-value">
+                <span class="currency-symbol" data-i18n="project.netSalaryCalculator.section.currency">R$</span>
+                <span id="fgts-value">0,00</span>
+              </div>
+            </div>
+
+            <div class="result-item">
+              <label data-i18n="project.netSalaryCalculator.section.privateRetirementLabel">Private Retirement Fund</label>
+              <div class="result-value">
+                <span class="currency-symbol" data-i18n="project.netSalaryCalculator.section.currency">R$</span>
+                <span id="private-retirement-value">0,00</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   </main>
