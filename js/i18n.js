@@ -59,7 +59,7 @@ const translations = {
     },
     portfolio: {
       heading: "Engineering Portfolio",
-      intro: "Projects organized by domain, not by technology.",
+      intro: "Software, electrical, and research work developed throughout a career spanning industrial automation, power systems, and enterprise software engineering.",
       categories: {
         software: {
           title: "Software Engineering",
@@ -129,7 +129,7 @@ const translations = {
     },
     technologies: {
       heading: "Technologies",
-      intro: "Grouped by purpose, not as a technology list.",
+      intro: "A toolkit built for engineering environments — developed and applied across industrial automation, power systems, and enterprise software.",
       groups: {
         programming: { title: "Programming" },
         frameworks: { title: "Frameworks" },
@@ -140,7 +140,7 @@ const translations = {
     },
     experience: {
       heading: "Experience",
-      intro: "A timeline, not a résumé.",
+      intro: "From industrial automation training to senior engineering software development — a career grounded in technical depth and real engineering challenges.",
       items: {
         0: {
           role: "Industrial Automation",
@@ -176,7 +176,7 @@ const translations = {
     },
     contact: {
       heading: "Contact",
-      intro: "Minimal, direct.",
+      intro: "Open to technical conversations, collaboration opportunities, or discussing engineering software challenges.",
       linkedinLabel: "LinkedIn",
       githubLabel: "GitHub",
       emailLabel: "Email",
@@ -232,7 +232,7 @@ const translations = {
     },
     portfolio: {
       heading: "Portfólio de Engenharia",
-      intro: "Projetos organizados por domínio, não por tecnologia.",
+      intro: "Trabalhos de software, elétrica e pesquisa desenvolvidos ao longo de uma carreira que abrange automação industrial, sistemas de potência e engenharia de software corporativo.",
       categories: {
         software: {
           title: "Engenharia de Software",
@@ -302,7 +302,7 @@ const translations = {
     },
     technologies: {
       heading: "Tecnologias",
-      intro: "Agrupadas por finalidade, não como uma lista de tecnologias.",
+      intro: "Um conjunto de ferramentas construído para ambientes de engenharia — desenvolvido e aplicado em automação industrial, sistemas de potência e software corporativo.",
       groups: {
         programming: { title: "Linguagens" },
         frameworks: { title: "Frameworks" },
@@ -313,7 +313,7 @@ const translations = {
     },
     experience: {
       heading: "Experiência",
-      intro: "Uma linha do tempo, não um currículo.",
+      intro: "Da formação em automação industrial ao desenvolvimento sênior de software para engenharia — uma trajetória fundamentada em profundidade técnica e desafios reais.",
       items: {
         0: {
           role: "Automação Industrial",
@@ -349,7 +349,7 @@ const translations = {
     },
     contact: {
       heading: "Contato",
-      intro: "Mínimo, direto.",
+      intro: "Aberto a conversas técnicas, oportunidades de colaboração ou discussões sobre desafios de software para engenharia.",
       linkedinLabel: "LinkedIn",
       githubLabel: "GitHub",
       emailLabel: "E-mail",
