@@ -11,6 +11,10 @@ export default {
     project: {
       netSalaryCalculator: {
         category: "Software Engineering",
+        meta: {
+          title: "Net Salary Calculator — Adrian Felipe Nogueira Batista",
+          description: "A web application for calculating net salary based on gross income, taxes, and deductions.",
+        },
         title: "Net Salary Calculator",
         subtitle: "A web application for calculating net salary based on gross income, taxes, and deductions.",
         tags: {
@@ -44,6 +48,10 @@ export default {
     project: {
       netSalaryCalculator: {
         category: "Engenharia de Software",
+        meta: {
+          title: "Calculadora de Salário Líquido — Adrian Felipe Nogueira Batista",
+          description: "Uma aplicação web para calcular o salário líquido com base no salário bruto, impostos e descontos.",
+        },
         title: "Calculadora de Salário Líquido",
         subtitle: "Uma aplicação web para calcular o salário líquido com base no salário bruto, impostos e descontos.",
         tags: {

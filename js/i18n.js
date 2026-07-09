@@ -15,6 +15,10 @@ const DEFAULT_LANG = "en";
 
 const translations = {
   en: {
+    meta: {
+      title: "Adrian Felipe Nogueira Batista — Engineer",
+      description: "Electrical Engineer specialized in software development for engineering. Engineering better solutions through software.",
+    },
     nav: {
       skip: "Skip to content",
       brand: "AFNB",
@@ -131,6 +135,10 @@ const translations = {
       breadcrumb: "Projects",
       title: "Projects",
       description: "Software applications, tools, and utilities developed to solve engineering and technical challenges.",
+      meta: {
+        title: "Projects — Adrian Felipe Nogueira Batista",
+        description: "Software engineering projects, tools, and applications developed for engineering workflows and industrial processes.",
+      },
       empty: "No projects available yet.",
       items: {
         netSalaryCalculator: {
@@ -206,6 +214,10 @@ const translations = {
   },
 
   pt: {
+    meta: {
+      title: "Adrian Felipe Nogueira Batista — Engenheiro",
+      description: "Engenheiro Eletricista especializado em desenvolvimento de software para engenharia. Transformando processos de engenharia por meio do desenvolvimento de software.",
+    },
     nav: {
       skip: "Pular para o conteúdo",
       brand: "AFNB",
@@ -322,6 +334,10 @@ const translations = {
       breadcrumb: "Projetos",
       title: "Projetos",
       description: "Aplicações de software, ferramentas e utilitários desenvolvidos para resolver desafios de engenharia e técnicos.",
+      meta: {
+        title: "Projetos — Adrian Felipe Nogueira Batista",
+        description: "Projetos de engenharia de software, ferramentas e aplicações desenvolvidas para fluxos de trabalho de engenharia e processos industriais.",
+      },
       empty: "Nenhum projeto disponível no momento.",
       items: {
         netSalaryCalculator: {
@@ -464,6 +480,13 @@ function applyTranslations(lang) {
     const value = getPath(dict, el.getAttribute("data-i18n"));
     if (typeof value === "string") {
       el.textContent = value;
+    }
+  });
+
+  document.querySelectorAll("[data-i18n-content]").forEach((el) => {
+    const value = getPath(dict, el.getAttribute("data-i18n-content"));
+    if (typeof value === "string") {
+      el.setAttribute("content", value);
     }
   });
 
