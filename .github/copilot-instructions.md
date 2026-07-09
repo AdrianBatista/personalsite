@@ -4,7 +4,7 @@ This repository hosts the personal website for Adrian Felipe Nogueira Batista. R
 
 ## Project Status
 
-No application code exists yet — only planning docs and AI configuration. When asked to scaffold the site, confirm the intended page structure (single scrolling page vs. multi-page) against `instructions.md`'s Site Structure section before creating files.
+The site is scaffolded: a single scrolling `index.html` with sections for every entry in `instructions.md`'s Site Structure, bilingual EN/PT copy driven by `js/i18n.js` (language resolved from `?language=` query param → `localStorage` → browser locale → `en`), and restrained motion via `js/motion.js`. Portfolio projects, technical article links, study notes, and contact URLs are placeholders flagged with `TODO` comments in `index.html` — replace them with real content before publishing.
 
 ## Language-Specific Conventions
 
@@ -43,7 +43,8 @@ No automated test suite exists yet. Until one is introduced:
 
 ## Code Style Notes
 
-- No linter configs exist yet ([ci.yml](workflows/ci.yml) runs tools via `npx` with their defaults). If custom lint configs (`.stylelintrc`, `.eslintrc`) are added later, reference them here instead of restating rules.
+- [.stylelintrc.json](../.stylelintrc.json) — minimal config (`{ "rules": {} }`) so `npx stylelint` has a config to resolve; it enforces no rules beyond CSS syntax validity. Tighten it with real rules if stricter CSS linting is desired later.
+- No ESLint config exists yet. [ci.yml](workflows/ci.yml) lints JS via `npx --yes eslint@8` with legacy CLI flags (`--no-eslintrc --env browser,es2021 --parser-options=...`) — pinned to v8 because eslint@9 removed those flags in favor of flat config. If an `.eslintrc`/`eslint.config.js` is added later, update `ci.yml` to drop the legacy flags and reference the config here instead of restating rules.
 
 ## Asset / Content Rules
 

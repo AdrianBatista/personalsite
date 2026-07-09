@@ -33,7 +33,8 @@ jobs:
 
       - name: Lint JavaScript
         if: hashFiles('**/*.js') != ''
-        run: npx --yes eslint "**/*.js" --no-eslintrc --env browser,es2021 --parser-options=ecmaVersion:2021,sourceType:module
+        # Pinned to eslint@8: eslint@9 dropped the legacy --no-eslintrc/--env/--parser-options flags in favor of flat config.
+        run: npx --yes eslint@8 "**/*.js" --no-eslintrc --env browser,es2021 --parser-options=ecmaVersion:2021,sourceType:module
 
       - name: No lintable files yet
         if: hashFiles('**/*.html') == '' && hashFiles('**/*.css') == '' && hashFiles('**/*.js') == ''

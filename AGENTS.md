@@ -4,7 +4,7 @@
 
 This repository will hold the personal website for **Adrian Felipe Nogueira Batista** — an Electrical Engineer specialized in software development for engineering. The site's positioning, tone, content structure, and design philosophy are fully specified in [instructions.md](instructions.md), which is the **source of truth** for scope and messaging. Read it before making any content or structural decision.
 
-**Current state:** the repository contains only planning/vision documentation and AI configuration. No application code, pages, or assets exist yet. Do not assume a `src/`, `public/`, or framework directory layout exists until it has actually been created.
+**Current state:** the site has been scaffolded as a single scrolling page (`index.html`) with all sections from instructions.md's Site Structure, bilingual EN/PT content via `js/i18n.js`, and restrained GSAP/Lenis/SplitType motion via `js/motion.js`. Portfolio project specifics, technical article links, study notes, and contact URLs (LinkedIn/GitHub/email) are still placeholders — see inline `TODO` comments in `index.html`.
 
 ## Tech Stack
 
@@ -48,11 +48,24 @@ js/
 assets/
 ```
 
-This may end up as a single scrolling page instead of separate HTML files (the vision document leans toward "cinematic pacing" and narrative flow) — decide deliberately and update this section when the real structure is created.
+The site was built as a single scrolling page rather than separate HTML files, per the vision document's lean toward "cinematic pacing" and narrative flow. Real structure:
+
+```
+index.html             # Single page: hero + About, Portfolio, Publications,
+                        # Technologies, Experience, Philosophy, Contact sections
+css/
+  tokens.css            # Design tokens (dark theme palette, spacing, fluid type)
+  main.css              # Layout, components, responsive nav, motion guards
+js/
+  main.js               # Module entry point (init order: i18n → nav → motion)
+  i18n.js               # EN/PT translation dictionary + language resolution/toggle
+  motion.js             # Lenis smooth scroll, GSAP + ScrollTrigger entrances, SplitType
+.stylelintrc.json       # Minimal config (no rules) so `npx stylelint` runs without error
+```
 
 ## Build & Run
 
-No build step exists yet. Once HTML/CSS/JS files are added, they can be served with any static file server (e.g. `npx serve .` or the VS Code Live Server extension). Update this section with the real command as soon as one is established.
+No build step. Serve the static files with any static file server, e.g. `npx serve .` or the VS Code Live Server extension, then open `index.html`. ES modules require an actual HTTP server — opening the file directly (`file://`) will not work.
 
 ## Testing
 

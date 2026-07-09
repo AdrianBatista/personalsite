@@ -6,7 +6,7 @@ Personal website positioning Adrian as an Electrical Engineer specialized in sof
 
 ## Status
 
-🚧 Pre-implementation. This repository currently contains the website vision/content plan and AI agent configuration only — no pages have been built yet.
+Site scaffolded as a single scrolling page (`index.html`) covering every section from the content plan, with bilingual EN/PT copy and restrained scroll motion. Portfolio projects, article links, study notes, and contact URLs are still placeholders — see `TODO` comments in `index.html`.
 
 - [instructions.md](instructions.md) — full brand positioning, content plan, design philosophy, and tone-of-voice guide. This is the source of truth for what the site should say and look like.
 - [AGENTS.md](AGENTS.md) — tech stack, repository structure, and conventions for AI coding agents (and humans) working in this repo.
@@ -19,7 +19,7 @@ Plain HTML5 / CSS3 / vanilla JavaScript, with GSAP, Lenis, and SplitType for mot
 
 1. Read [instructions.md](instructions.md) and [AGENTS.md](AGENTS.md) before making changes — they define the required tone, structure, and stack.
 2. Fork the repository and create a feature branch.
-3. Once the site is scaffolded, run the lint checks locally before opening a PR (see [.github/workflows/ci.yml](.github/workflows/ci.yml) for the exact commands).
+3. Run the lint checks locally before opening a PR (see [.github/workflows/ci.yml](.github/workflows/ci.yml) for the exact commands: `html-validate`, `stylelint`, `eslint@8`).
 4. Open a pull request using the provided template.
 
 ## License
