@@ -1,0 +1,23 @@
+name: Feature Request
+description: Suggest a new page, section, or capability for the website
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's missing or could be improved?
+    validations:
+      required: true
+  - type: textarea
+    id: alignment
+    attributes:
+      label: How does this align with instructions.md?
+      description: Reference the relevant section of the brand positioning / content plan document.
+    validations:
+      required: false
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+    validations:
+      required: false

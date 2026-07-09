@@ -1,0 +1,66 @@
+# Copilot Instructions
+
+This repository hosts the personal website for Adrian Felipe Nogueira Batista. Read [instructions.md](../instructions.md) (brand positioning, tone, content plan) and [AGENTS.md](../AGENTS.md) (stack, structure, build/test) before generating content or code. This file covers coding conventions and the maintenance matrix.
+
+## Project Status
+
+No application code exists yet — only planning docs and AI configuration. When asked to scaffold the site, confirm the intended page structure (single scrolling page vs. multi-page) against `instructions.md`'s Site Structure section before creating files.
+
+## Language-Specific Conventions
+
+### HTML
+- Semantic HTML5 elements (`<header>`, `<main>`, `<section>`, `<article>`, `<nav>`, `<footer>`) — no generic `<div>` soup.
+- One `<h1>` per page; heading levels must nest correctly for accessibility.
+- All images require meaningful `alt` text; decorative images use `alt=""`.
+
+### CSS
+- Use CSS custom properties (`:root { --bg, --accent-blue, --accent-green }`) for the dark theme palette described in instructions.md — neutral dark background, blue and green accents, minimal gradients.
+- Prefer `clamp()` for fluid typography scales over fixed breakpoints where practical.
+- Only animate `transform` and `opacity`. Never animate `width`, `height`, `top`, `left`, or `margin`.
+- Wrap continuous/heavy animations in `@media (prefers-reduced-motion: no-preference)`.
+- Wrap hover-only/cursor-follow effects in `@media (hover: hover) and (pointer: fine)`.
+
+### JavaScript
+- Vanilla ES modules (`<script type="module">`), no bundler unless explicitly requested.
+- Keep animation logic (GSAP timelines, ScrollTrigger, Lenis init) isolated in dedicated modules under `js/` (e.g. `js/motion.js`) rather than inline in HTML.
+- No inline `onclick=` handlers — attach listeners in JS modules.
+
+## Framework / Library Patterns
+
+- **GSAP + ScrollTrigger**: use for scroll-driven narrative sections (pinned containers, parallax) per [.github/skills/premium-frontend-ui/SKILL.md](skills/premium-frontend-ui/SKILL.md).
+- **Lenis**: initialize once globally for smooth scrolling; don't instantiate per-section.
+- **SplitType**: use for headline word/character splitting to enable staggered entrance animations; ensure split text still reads correctly to screen readers (use `aria-label` on the container with the full text).
+
+## Conventions Mined from PR Reviews
+
+None yet — this is a new repository with no PR history. Revisit this section after the first few PRs to capture recurring reviewer feedback.
+
+## Test Conventions
+
+No automated test suite exists yet. Until one is introduced:
+- Validate HTML/CSS/JS via the CI lint workflow before merging.
+- Manually verify animations respect `prefers-reduced-motion` and that touch devices aren't served hover-only interactions.
+
+## Code Style Notes
+
+- No linter configs exist yet ([ci.yml](workflows/ci.yml) runs tools via `npx` with their defaults). If custom lint configs (`.stylelintrc`, `.eslintrc`) are added later, reference them here instead of restating rules.
+
+## Asset / Content Rules
+
+- Visual motifs should reinforce the engineering theme: PCB traces, circuit diagrams, code snippets, system diagrams — per instructions.md. Avoid generic stock-photo or marketing-style imagery.
+- Content tone: professional, technical, concise, documentation-like. Never use buzzwords or exaggerated self-promotion (see instructions.md § Tone of Voice).
+- Portfolio content is grouped by category (Software Engineering / Electrical Engineering / Research / Open Source), never by a flat technology logo wall.
+
+## Maintenance Matrix
+
+This matrix will grow once the site is scaffolded. Update it whenever a change in one place requires a cascading update elsewhere.
+
+| If you change... | Also update... |
+|---|---|
+| Brand positioning, tagline, or tone rules | [instructions.md](../instructions.md) first, then any page copy that quotes it, then this file if conventions changed |
+| Site navigation / page list | Nav markup on every page (or the shared nav component, once one exists), the "Planned" structure list in [AGENTS.md](../AGENTS.md), and instructions.md's Site Structure section |
+| Color palette / theme tokens | CSS custom properties in the shared stylesheet and any hardcoded colors in inline `<style>` blocks |
+| Motion/animation conventions | [.github/skills/premium-frontend-ui/SKILL.md](skills/premium-frontend-ui/SKILL.md) usage notes above, and any existing animation modules under `js/` |
+| Lint tooling used in CI | [workflows/ci.yml](workflows/ci.yml) and [workflows/copilot-setup-steps.yml](workflows/copilot-setup-steps.yml) so the agent environment matches CI |
+
+**Note:** trace actual import/registration chains (nav includes, shared partials, build config) once they exist — this table is intentionally forward-looking and should be corrected against real file paths as soon as the site is scaffolded.

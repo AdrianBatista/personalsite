@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  lint:
+    name: Lint HTML / CSS / JS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Lint HTML
+        if: hashFiles('**/*.html') != ''
+        run: npx --yes html-validate "**/*.html"
+
+      - name: Lint CSS
+        if: hashFiles('**/*.css') != ''
+        run: npx --yes stylelint "**/*.css" --allow-empty-input
+
+      - name: Lint JavaScript
+        if: hashFiles('**/*.js') != ''
+        run: npx --yes eslint "**/*.js" --no-eslintrc --env browser,es2021 --parser-options=ecmaVersion:2021,sourceType:module
+
+      - name: No lintable files yet
+        if: hashFiles('**/*.html') == '' && hashFiles('**/*.css') == '' && hashFiles('**/*.js') == ''
+        run: echo "No HTML/CSS/JS files found yet — nothing to lint."
