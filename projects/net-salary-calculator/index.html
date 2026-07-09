@@ -10,6 +10,11 @@
   <link rel="stylesheet" href="../../css/tokens.css">
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/subproject.css">
+  <script type="module">
+    import { registerTranslations } from "../../js/i18n.js";
+    import projectTranslations from "../../projects/net-salary-calculator/i18n.js";
+    registerTranslations(projectTranslations);
+  </script>
   <script type="module" src="../../js/main.js"></script>
 </head>
 <body>
@@ -68,18 +73,20 @@
         <div class="subproject-breadcrumb">
           <a href="../../index.html#portfolio">Portfolio</a>
           <span>/</span>
-          <span>TODO: Category</span>
+          <span data-i18n="project.netSalaryCalculator.category">Software Engineering</span>
         </div>
 
         <div class="subproject-title-wrap">
           <div class="subproject-heading">
-            <h1 class="subproject-title">TODO: Project Title</h1>
-            <p class="subproject-subtitle">TODO: Brief description or tagline</p>
+            <h1 class="subproject-title" data-i18n="project.netSalaryCalculator.title">Net Salary Calculator</h1>
+            <p class="subproject-subtitle" data-i18n="project.netSalaryCalculator.subtitle">A web application for calculating net salary based on gross income, taxes, and deductions.</p>
           </div>
         </div>
 
         <div class="subproject-meta-tags">
-          <span class="subproject-tag">TODO: Tag</span>
+          <span class="subproject-tag" data-i18n="project.netSalaryCalculator.tags.0">JavaScript</span>
+          <span class="subproject-tag" data-i18n="project.netSalaryCalculator.tags.1">Web App</span>
+          <span class="subproject-tag" data-i18n="project.netSalaryCalculator.tags.2">Finance</span>
         </div>
       </div>
     </section>
@@ -87,10 +94,8 @@
     <!-- ============ PROJECT CONTENT ============ -->
     <section class="subproject-content">
       <div class="subproject-content-inner">
-        <!-- Add your project content here -->
       </div>
     </section>
-
   </main>
 
   <!-- ============ FOOTER ============ -->

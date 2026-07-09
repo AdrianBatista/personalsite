@@ -365,6 +365,42 @@ function getPath(obj, path) {
   return path.split(".").reduce((acc, key) => (acc == null ? acc : acc[key]), obj);
 }
 
+function isPlainObject(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function deepMerge(target, source) {
+  Object.keys(source).forEach((key) => {
+    if (isPlainObject(source[key]) && isPlainObject(target[key])) {
+      deepMerge(target[key], source[key]);
+    } else {
+      target[key] = source[key];
+    }
+  });
+  return target;
+}
+
+/**
+ * Registers additional translation keys (e.g. from a subproject page's own
+ * i18n module) by deep-merging them into the shared dictionary. Safe to call
+ * before or after `initI18n()` — if translations were already applied to the
+ * DOM, they are re-applied with the newly merged keys.
+ *
+ * Expected shape: { en: { ... }, pt: { ... } }
+ */
+export function registerTranslations(extra) {
+  SUPPORTED_LANGS.forEach((lang) => {
+    if (isPlainObject(extra[lang])) {
+      translations[lang] = translations[lang] || {};
+      deepMerge(translations[lang], extra[lang]);
+    }
+  });
+
+  if (i18nInitialized) {
+    applyTranslations(currentLang);
+  }
+}
+
 function resolveLanguage() {
   const params = new URLSearchParams(window.location.search);
   const fromQuery = params.get(QUERY_PARAM);
@@ -418,6 +454,7 @@ function persistLanguage(lang) {
 }
 
 let currentLang = DEFAULT_LANG;
+let i18nInitialized = false;
 
 export function setLanguage(lang) {
   if (!SUPPORTED_LANGS.includes(lang)) return;
@@ -432,6 +469,7 @@ export function getLanguage() {
 
 export function initI18n() {
   currentLang = resolveLanguage();
+  i18nInitialized = true;
   applyTranslations(currentLang);
   persistLanguage(currentLang);
 

@@ -227,7 +227,20 @@ All subproject pages use the shared design tokens from `css/tokens.css`:
 
 The layout respects the i18n system from the main site. Bilingual strings in the header/footer are automatically translated based on `localStorage` or query parameter (`?language=en`/`?language=pt`).
 
-For project-specific content, use plain text or add entries to `js/i18n.js` if translations are needed.
+For project-specific content, prefer keeping translation keys local to the project folder rather than editing the shared `js/i18n.js` dictionary. Create a sibling `i18n.js` file (e.g. `projects/your-project/i18n.js`) exporting a default `{ en: {...}, pt: {...} }` object namespaced under `project.<projectName>`, then register it before `main.js` runs:
+
+```html
+<script type="module">
+  import { registerTranslations } from "../../js/i18n.js";
+  import projectTranslations from "../../projects/your-project/i18n.js";
+  registerTranslations(projectTranslations);
+</script>
+<script type="module" src="../../js/main.js"></script>
+```
+
+**Important:** import the project's `i18n.js` using the full root-relative-then-back-down path (`../../projects/your-project/i18n.js`), not a same-directory relative path (`./i18n.js`). Some static hosts/dev servers rewrite `/index.html` URLs to drop the trailing filename/slash, which shifts same-directory relative imports up one directory level and 404s. The `../../...` form matches how the CSS/JS links already resolve on this page and is immune to that ambiguity.
+
+Reference `data-i18n="project.yourProjectName.someKey"` on elements needing translation, matching the keys defined in your project's `i18n.js`.
 
 ## Responsive Behavior
 
