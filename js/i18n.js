@@ -152,6 +152,12 @@ const translations = {
             2: "Finance",
           },
         },
+        backgroundRemover: {
+          title: "Background Remover",
+          desc: "A visual interface for uploading an image, previewing a transparent-background result, and downloading the output.",
+          category: "Software Engineering",
+          tags: { 0: "Web App", 1: "Image Processing", 2: "Prototype" },
+        },
       },
     },
     technologies: {
@@ -351,6 +357,12 @@ const translations = {
             1: "Web App",
             2: "Finanças",
           },
+        },
+        backgroundRemover: {
+          title: "Removedor de Fundo",
+          desc: "Uma interface visual para enviar uma imagem, visualizar o resultado com fundo transparente e baixar o arquivo.",
+          category: "Engenharia de Software",
+          tags: { 0: "Web App", 1: "Processamento de Imagens", 2: "Protótipo" },
         },
       },
     },
