@@ -95,6 +95,11 @@
   margin-bottom: 0;
 }
 
+.article-ad {
+  min-height: 5.625rem;
+  margin: 0 0 var(--space-xl);
+}
+
 .subproject-section-title {
   font-size: var(--font-size-lg);
   color: var(--text-primary);
