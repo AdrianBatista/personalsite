@@ -154,9 +154,9 @@ const translations = {
         },
         backgroundRemover: {
           title: "Background Remover",
-          desc: "A visual interface for uploading an image, previewing a transparent-background result, and downloading the output.",
+          desc: "A browser-based tool that removes image backgrounds locally and exports a transparent PNG.",
           category: "Software Engineering",
-          tags: { 0: "Web App", 1: "Image Processing", 2: "Prototype" },
+          tags: { 0: "Web App", 1: "Image Processing", 2: "Client-Side" },
         },
       },
     },
@@ -360,9 +360,9 @@ const translations = {
         },
         backgroundRemover: {
           title: "Removedor de Fundo",
-          desc: "Uma interface visual para enviar uma imagem, visualizar o resultado com fundo transparente e baixar o arquivo.",
+          desc: "Uma ferramenta executada no navegador que remove fundos localmente e exporta um PNG transparente.",
           category: "Engenharia de Software",
-          tags: { 0: "Web App", 1: "Processamento de Imagens", 2: "Protótipo" },
+          tags: { 0: "Web App", 1: "Processamento de Imagens", 2: "Cliente" },
         },
       },
     },
@@ -516,6 +516,10 @@ function applyTranslations(lang) {
   document.querySelectorAll("[data-lang-option]").forEach((el) => {
     el.classList.toggle("is-active", el.getAttribute("data-lang-option") === lang);
   });
+
+  if (typeof window !== "undefined") {
+    window.applyTranslations = () => applyTranslations(currentLang);
+  }
 }
 
 function persistLanguage(lang) {
@@ -534,6 +538,7 @@ export function setLanguage(lang) {
   currentLang = lang;
   applyTranslations(currentLang);
   persistLanguage(currentLang);
+  document.dispatchEvent(new Event("languageChange"));
 }
 
 export function getLanguage() {

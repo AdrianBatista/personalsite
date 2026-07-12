@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Experience timeline now shows real dates and a 1–2 sentence description per role, sourced from the user's resume: IFSP (Jan 2014 – Jan 2015), UNESP (Jan 2016 – Jan 2021), and three Hitachi Energy roles (Engineering Internship, Mid-level Software Developer, Senior Software Development Analyst) spanning Feb 2021 – Present.
 - Added "Creo Toolkit" to the Technologies → Engineering group, per the resume.
 - Publications → Academic now shows the real thesis title and a 1–2 sentence summary (EN + translated PT resumo) above the repository link.
+- Completed the browser-only Background Remover with drag-and-drop upload, ONNX/IS-Net neural segmentation, WebGPU/CPU fallback, transparent preview, PNG download, bilingual copy, and an implementation article.
 
 ### Known gaps
 

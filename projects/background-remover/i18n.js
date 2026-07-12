@@ -1,37 +1,169 @@
 /** Translations specific to the Background Remover project. */
 export default {
-  en: { project: { backgroundRemover: {
-    category: "Software Engineering",
-    meta: { title: "Background Remover — Adrian Felipe Nogueira Batista", description: "A visual interface for uploading an image, previewing a transparent-background result, and downloading the output." },
-    title: "Background Remover", subtitle: "Upload an image, review the transparent-background preview, and download the result.",
-    tags: { 0: "Web App", 1: "Image Processing", 2: "Interface Prototype" },
-    workspace: { status: "Prototype interface", note: "Local preview only. No image is uploaded or processed." },
-    upload: { kicker: "Input", title: "Source image", action: "Drop image here", hint: "or select a PNG, JPG, WEBP file", replace: "Drop another image to replace", fileLabel: "Selected file", invalid: "Choose a valid image file." },
-    result: { kicker: "Output", title: "Transparent result", placeholder: "Transparent preview area", detail: "The processing service is not connected yet.", status: "Waiting for an image", download: "Download PNG" },
-    articleLink: "Read how background removal works",
-    article: {
-      breadcrumb: "Article", meta: { title: "How Background Removal Works — Adrian Felipe Nogueira Batista", description: "An overview of image background removal, its processing stages, and how to use this interface." },
-      title: "How Background Removal Works", subtitle: "A practical overview of image segmentation and the workflow proposed by this tool.", tags: { 0: "Guide", 1: "Image Processing", 2: "Web App" },
-      overview: { title: "What is background removal?", p1: "Background removal separates the primary subject of an image from the surrounding pixels. The output normally preserves the subject and replaces the original background with transparency, making the image easier to reuse in documents, product catalogs, or compositions.", p2: "The task is more than a simple color replacement. A useful result has to preserve boundaries around hair, fabric, transparent objects, and fine details while avoiding unwanted portions of the background." },
-      process: { title: "Typical processing stages", p1: "A removal service usually receives an image, identifies the foreground subject, and produces a mask. Each mask pixel represents how strongly the original pixel belongs to the subject. The service then applies this mask as the image alpha channel, creating a transparent-background output.", p2: "The visual quality depends on the model, input resolution, subject contrast, and details near the boundary. A final refinement step may soften edges and reduce artifacts before the PNG or WebP result is generated.", steps: { 0: { title: "Input", text: "Validate the selected file and prepare its pixels for processing." }, 1: { title: "Segmentation", text: "Estimate which pixels belong to the foreground subject." }, 2: { title: "Mask", text: "Convert the foreground estimate into an alpha mask with refined edges." }, 3: { title: "Output", text: "Apply the mask and export an image format that supports transparency." } } },
-      usage: { title: "How to use this interface", intro: "The project currently provides the visual workflow only; no image is sent or converted yet.", steps: { 0: "Select the upload area and choose an image. The file chooser filters for image formats.", 1: "In a connected version, the chosen file would be sent to the removal service.", 2: "The result panel would show the transparent output over the checkerboard surface.", 3: "Once an output is available, the download button would provide the processed image." }, outro: "Keeping the interface separate from the processing service makes it possible to connect a local model, a server-side API, or another approved image-processing workflow later." }, openTool: "Open Background Remover"
-    }
-  } } },
-  pt: { project: { backgroundRemover: {
-    category: "Engenharia de Software",
-    meta: { title: "Removedor de Fundo — Adrian Felipe Nogueira Batista", description: "Uma interface visual para enviar uma imagem, visualizar o resultado com fundo transparente e baixar o arquivo." },
-    title: "Removedor de Fundo", subtitle: "Envie uma imagem, visualize o resultado com fundo transparente e baixe o arquivo.",
-    tags: { 0: "Web App", 1: "Processamento de Imagens", 2: "Protótipo de Interface" },
-    workspace: { status: "Interface protótipo", note: "Prévia local apenas. Nenhuma imagem é enviada ou processada." },
-    upload: { kicker: "Entrada", title: "Imagem de origem", action: "Solte a imagem aqui", hint: "ou selecione um arquivo PNG, JPG, WEBP", replace: "Solte outra imagem para substituir", fileLabel: "Arquivo selecionado", invalid: "Escolha um arquivo de imagem válido." },
-    result: { kicker: "Saída", title: "Resultado transparente", placeholder: "Área de prévia transparente", detail: "O serviço de processamento ainda não está conectado.", status: "Aguardando uma imagem", download: "Baixar PNG" },
-    articleLink: "Entenda como funciona a remoção de fundo",
-    article: {
-      breadcrumb: "Artigo", meta: { title: "Como Funciona a Remoção de Fundo — Adrian Felipe Nogueira Batista", description: "Uma visão geral sobre remoção de fundo em imagens, suas etapas de processamento e como utilizar esta interface." },
-      title: "Como Funciona a Remoção de Fundo", subtitle: "Uma visão prática sobre segmentação de imagens e o fluxo proposto por esta ferramenta.", tags: { 0: "Guia", 1: "Processamento de Imagens", 2: "Web App" },
-      overview: { title: "O que é remoção de fundo?", p1: "A remoção de fundo separa o assunto principal de uma imagem dos pixels ao redor. O resultado normalmente preserva o assunto e substitui o fundo original por transparência, tornando a imagem mais fácil de reutilizar em documentos, catálogos de produtos ou composições.", p2: "A tarefa vai além da simples troca de uma cor. Um resultado útil precisa preservar contornos de cabelos, tecidos, objetos transparentes e detalhes finos, sem incluir partes indesejadas do fundo." },
-      process: { title: "Etapas típicas do processamento", p1: "Um serviço de remoção normalmente recebe a imagem, identifica o assunto em primeiro plano e produz uma máscara. Cada pixel da máscara representa o quanto o pixel original pertence ao assunto. Em seguida, o serviço aplica essa máscara como canal alfa da imagem, criando um resultado com fundo transparente.", p2: "A qualidade visual depende do modelo, da resolução da imagem de entrada, do contraste do assunto e dos detalhes próximos ao contorno. Uma etapa final de refinamento pode suavizar as bordas e reduzir artefatos antes de gerar o resultado em PNG ou WebP.", steps: { 0: { title: "Entrada", text: "Validar o arquivo selecionado e preparar seus pixels para o processamento." }, 1: { title: "Segmentação", text: "Estimar quais pixels pertencem ao assunto em primeiro plano." }, 2: { title: "Máscara", text: "Converter a estimativa de primeiro plano em uma máscara alfa com bordas refinadas." }, 3: { title: "Saída", text: "Aplicar a máscara e exportar um formato de imagem compatível com transparência." } } },
-      usage: { title: "Como utilizar esta interface", intro: "O projeto oferece atualmente apenas o fluxo visual; nenhuma imagem é enviada ou convertida ainda.", steps: { 0: "Selecione a área de envio e escolha uma imagem. O seletor de arquivos filtra formatos de imagem.", 1: "Em uma versão conectada, o arquivo escolhido seria enviado ao serviço de remoção.", 2: "O painel de resultado mostraria a saída transparente sobre a superfície quadriculada.", 3: "Quando houver um resultado disponível, o botão de download fornecerá a imagem processada." }, outro: "Manter a interface separada do serviço de processamento permite conectar posteriormente um modelo local, uma API no servidor ou outro fluxo aprovado de processamento de imagens." }, openTool: "Abrir Removedor de Fundo"
-    }
-  } } },
+  en: {
+    project: {
+      backgroundRemover: {
+        category: "Software Engineering",
+        meta: {
+          title: "Background Remover — Adrian Felipe Nogueira Batista",
+          description: "A browser-based interface that removes image backgrounds locally and exports a transparent PNG.",
+        },
+        title: "Background Remover",
+        subtitle: "Drop an image, process it in the browser, and download a transparent PNG without sending the file to a server.",
+        tags: { 0: "Web App", 1: "Image Processing", 2: "Client-Side" },
+        workspace: {
+          status: "Client-side processing",
+          note: "The image never leaves your browser.",
+        },
+        upload: {
+          kicker: "Input",
+          title: "Source image",
+          action: "Drop image here",
+          hint: "or select a PNG, JPG, WEBP file",
+          replace: "Drop another image to replace",
+          fileLabel: "Selected file",
+          invalid: "Choose a valid image file.",
+        },
+        controls: {
+          process: "Remove background",
+        },
+        result: {
+          kicker: "Output",
+          title: "Transparent result",
+          placeholder: "Transparent preview area",
+          detail: "An AI-generated subject mask appears here after local processing. The first run downloads and caches the model.",
+          processing: "Removing background locally...",
+          status: "Waiting for an image",
+          download: "Download PNG",
+        },
+        articleLink: "Read how background removal works",
+        article: {
+          breadcrumb: "Article",
+          meta: {
+            title: "How the Client-Side Background Remover Works — Adrian Felipe Nogueira Batista",
+            description: "A practical explanation of the browser-only background removal workflow used in this project.",
+          },
+          title: "How the Client-Side Background Remover Works",
+          subtitle: "A practical overview of the local neural-segmentation workflow used to generate a subject mask and export a transparent PNG.",
+          tags: { 0: "Guide", 1: "Image Processing", 2: "Client-Side" },
+          overview: {
+            title: "What this tool does",
+            p1: "Background removal separates the main subject of an image from the pixels that form the background. The output keeps the subject and turns the background transparent so the image can be reused in documents, product pages, or visual compositions.",
+            p2: "This project runs entirely in the browser. The file is decoded locally, analyzed with canvas APIs, and exported as a PNG without sending the image to a server.",
+          },
+          process: {
+            title: "Local processing stages",
+            p1: "The implementation uses IMG.LY's IS-Net neural segmentation engine through ONNX Runtime. The model identifies the foreground subject from the complete image instead of relying on a sampled background color.",
+            p2: "The first run downloads and caches the model and WebAssembly runtime. Inference then runs on the user's device, using WebGPU when available and automatically falling back to the CPU.",
+            steps: {
+              0: { title: "Load", text: "Read the selected file directly in the browser and scale it to a processing canvas." },
+              1: { title: "Segment", text: "Run the IS-Net neural model locally to identify the foreground subject." },
+              2: { title: "Mask", text: "Convert the model output into a detailed alpha mask, including complex subject edges." },
+              3: { title: "Export", text: "Apply the mask, preserve the subject, and export a transparent PNG for download." },
+            },
+          },
+          usage: {
+            title: "How to use this interface",
+            intro: "The workflow is intentionally direct so the tool stays usable on desktop and mobile.",
+            steps: {
+              0: "Drop an image into the source panel or click the area to choose a file. The file picker only accepts image formats.",
+              1: "Select Remove background to load the AI model and run the local segmentation step.",
+              2: "Review the result on the checkerboard surface. The preview is rendered locally in the browser.",
+              3: "When the output looks correct, download the generated PNG with transparency preserved.",
+            },
+            outro: "Best results come from images with a clear subject and a background that is reasonably distinct from the foreground.",
+          },
+          notes: {
+            title: "Implementation notes",
+            p1: "The image stays on the user's device. Only the engine runtime and neural model are downloaded from the provider's CDN, then cached by the browser for later runs.",
+            p2: "Neural segmentation handles complex scenes and similar foreground/background colors substantially better than the previous color-based heuristic. Fine hair, transparent objects, and motion blur can still produce imperfect edges.",
+          },
+          openTool: "Open Background Remover",
+        },
+      },
+    },
+  },
+  pt: {
+    project: {
+      backgroundRemover: {
+        category: "Engenharia de Software",
+        meta: {
+          title: "Removedor de Fundo — Adrian Felipe Nogueira Batista",
+          description: "Uma interface baseada no navegador que remove fundos localmente e exporta um PNG transparente.",
+        },
+        title: "Removedor de Fundo",
+        subtitle: "Solte uma imagem, processe no navegador e baixe um PNG transparente sem enviar o arquivo para um servidor.",
+        tags: { 0: "Web App", 1: "Processamento de Imagens", 2: "Cliente" },
+        workspace: {
+          status: "Processamento no cliente",
+          note: "A imagem nunca sai do seu navegador.",
+        },
+        upload: {
+          kicker: "Entrada",
+          title: "Imagem de origem",
+          action: "Solte a imagem aqui",
+          hint: "ou selecione um arquivo PNG, JPG, WEBP",
+          replace: "Solte outra imagem para substituir",
+          fileLabel: "Arquivo selecionado",
+          invalid: "Escolha um arquivo de imagem válido.",
+        },
+        controls: {
+          process: "Remover fundo",
+        },
+        result: {
+          kicker: "Saída",
+          title: "Resultado transparente",
+          placeholder: "Área de prévia transparente",
+          detail: "Uma máscara do assunto gerada por IA aparece aqui após o processamento local. A primeira execução baixa e armazena o modelo em cache.",
+          processing: "Removendo o fundo localmente...",
+          status: "Aguardando uma imagem",
+          download: "Baixar PNG",
+        },
+        articleLink: "Entenda como funciona a remoção de fundo",
+        article: {
+          breadcrumb: "Artigo",
+          meta: {
+            title: "Como o Removedor de Fundo Client-Side Funciona — Adrian Felipe Nogueira Batista",
+            description: "Uma explicação prática do fluxo de remoção de fundo executado inteiramente no navegador neste projeto.",
+          },
+          title: "Como o Removedor de Fundo Client-Side Funciona",
+          subtitle: "Uma visão prática do fluxo local de segmentação neural usado para gerar a máscara do assunto e exportar um PNG transparente.",
+          tags: { 0: "Guia", 1: "Processamento de Imagens", 2: "Cliente" },
+          overview: {
+            title: "O que esta ferramenta faz",
+            p1: "A remoção de fundo separa o assunto principal de uma imagem dos pixels que formam o fundo. O resultado preserva o assunto e torna o fundo transparente, permitindo reutilizar a imagem em documentos, páginas de produto ou composições visuais.",
+            p2: "Este projeto roda inteiramente no navegador. O arquivo é decodificado localmente, analisado com APIs de canvas e exportado como PNG sem enviar a imagem para um servidor.",
+          },
+          process: {
+            title: "Etapas do processamento local",
+            p1: "A implementação usa o mecanismo de segmentação neural IS-Net da IMG.LY por meio do ONNX Runtime. O modelo identifica o assunto em primeiro plano a partir da imagem completa, sem depender de uma amostra da cor do fundo.",
+            p2: "A primeira execução baixa e armazena em cache o modelo e o runtime WebAssembly. A inferência roda no dispositivo do usuário, usando WebGPU quando disponível e alternando automaticamente para CPU quando necessário.",
+            steps: {
+              0: { title: "Carregar", text: "Ler o arquivo selecionado diretamente no navegador e redimensioná-lo para a área de processamento." },
+              1: { title: "Segmentar", text: "Executar localmente o modelo neural IS-Net para identificar o assunto em primeiro plano." },
+              2: { title: "Máscara", text: "Converter a saída do modelo em uma máscara alfa detalhada, incluindo contornos complexos do assunto." },
+              3: { title: "Exportar", text: "Aplicar a máscara, preservar o assunto e exportar um PNG transparente para download." },
+            },
+          },
+          usage: {
+            title: "Como utilizar esta interface",
+            intro: "O fluxo foi mantido direto para continuar utilizável em desktop e mobile.",
+            steps: {
+              0: "Solte uma imagem no painel de entrada ou clique na área para escolher um arquivo. O seletor aceita apenas formatos de imagem.",
+              1: "Selecione Remover fundo para carregar o modelo de IA e iniciar a segmentação local.",
+              2: "Revise o resultado sobre a superfície quadriculada. A prévia é renderizada localmente no navegador.",
+              3: "Quando o resultado estiver correto, faça o download do PNG gerado com transparência preservada.",
+            },
+            outro: "Os melhores resultados aparecem em imagens com assunto claro e fundo razoavelmente distinto do primeiro plano.",
+          },
+          notes: {
+            title: "Notas de implementação",
+            p1: "A imagem permanece no dispositivo do usuário. Apenas o runtime e o modelo neural são baixados do CDN do fornecedor e armazenados em cache pelo navegador para execuções posteriores.",
+            p2: "A segmentação neural trata cenas complexas e cores semelhantes entre fundo e primeiro plano muito melhor do que a heurística anterior. Cabelos finos, objetos transparentes e desfoque de movimento ainda podem gerar contornos imperfeitos.",
+          },
+          openTool: "Abrir Removedor de Fundo",
+        },
+      },
+    },
+  },
 };

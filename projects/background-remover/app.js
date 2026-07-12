@@ -1,20 +1,36 @@
+import { removeBackground } from "@imgly/background-removal";
 import { getLanguage } from "/js/i18n.js";
 
 /**
- * Handles local image selection and drag-and-drop feedback only.
- * Background removal and file download are intentionally not implemented.
+ * Client-side neural background removal powered by IMG.LY's IS-Net model.
+ * The selected image stays in the browser. Runtime and model assets are
+ * downloaded on first use and then reused from the browser cache.
  */
 
 const STATUS_LABELS = {
   en: {
     waiting: "Waiting for an image",
-    pending: "Image selected. Converter pending.",
+    selected: "Image ready to process",
+    processing: "Removing background locally...",
+    loading: (percent) => `Loading AI model... ${percent}%`,
+    fallback: "GPU unavailable. Continuing on CPU...",
+    ready: "Background removed locally",
+    error: "Unable to process this image",
   },
   pt: {
     waiting: "Aguardando uma imagem",
-    pending: "Imagem selecionada. Conversor pendente.",
+    selected: "Imagem pronta para processar",
+    processing: "Removendo o fundo localmente...",
+    loading: (percent) => `Carregando modelo de IA... ${percent}%`,
+    fallback: "GPU indisponível. Continuando na CPU...",
+    ready: "Fundo removido localmente",
+    error: "Não foi possível processar esta imagem",
   },
 };
+
+function getLabels() {
+  return STATUS_LABELS[getLanguage() === "pt" ? "pt" : "en"];
+}
 
 function formatFileSize(size) {
   if (!Number.isFinite(size) || size <= 0) return "—";
@@ -22,9 +38,10 @@ function formatFileSize(size) {
   return `${(size / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function getStatusLabel(key) {
-  const lang = getLanguage() === "pt" ? "pt" : "en";
-  return STATUS_LABELS[lang][key];
+function findImageFile(fileList) {
+  return Array.from(fileList || []).find(
+    (file) => file?.type?.startsWith("image/"),
+  ) || null;
 }
 
 function initBackgroundRemover() {
@@ -37,47 +54,152 @@ function initBackgroundRemover() {
   const fileSize = document.getElementById("upload-file-size");
   const error = document.getElementById("upload-error");
   const resultStatus = document.getElementById("result-status");
+  const resultPreview = document.getElementById("result-preview");
+  const resultEmptyState = document.getElementById("result-empty-state");
+  const resultProcessing = document.getElementById("result-processing");
+  const processButton = document.getElementById("process-button");
+  const downloadButton = document.getElementById("download-button");
 
-  if (!input || !dropzone || !preview || !previewWrap || !emptyState || !fileName || !fileSize || !error || !resultStatus) return;
-
-  let previewUrl = "";
-  let dragDepth = 0;
-  let hasSelectedImage = false;
-
-  function clearPreviewUrl() {
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      previewUrl = "";
-    }
+  if (
+    !input || !dropzone || !preview || !previewWrap || !emptyState ||
+    !fileName || !fileSize || !error || !resultStatus || !resultPreview ||
+    !resultEmptyState || !resultProcessing || !processButton || !downloadButton
+  ) {
+    return;
   }
 
-  function showImage(file) {
-    if (!file) return;
+  let sourcePreviewUrl = "";
+  let resultObjectUrl = "";
+  let currentFile = null;
+  let currentState = "waiting";
+  let currentJobId = 0;
+  let dragDepth = 0;
 
-    if (!file || !file.type.startsWith("image/")) {
+  function revokeUrl(url) {
+    if (url) URL.revokeObjectURL(url);
+  }
+
+  function setSourceUrl(url) {
+    revokeUrl(sourcePreviewUrl);
+    sourcePreviewUrl = url;
+    preview.src = url;
+  }
+
+  function setResultUrl(url) {
+    revokeUrl(resultObjectUrl);
+    resultObjectUrl = url;
+    resultPreview.src = url;
+  }
+
+  function setState(nextState, statusOverride = "") {
+    currentState = nextState;
+    const labels = getLabels();
+    resultStatus.textContent = statusOverride || labels[nextState] || labels.waiting;
+    resultProcessing.hidden = nextState !== "processing";
+    resultEmptyState.hidden = nextState === "processing" || nextState === "ready";
+    resultPreview.hidden = nextState !== "ready";
+    processButton.disabled = !currentFile || nextState === "processing";
+    downloadButton.disabled = nextState !== "ready" || !resultObjectUrl;
+    processButton.setAttribute("aria-disabled", String(processButton.disabled));
+    downloadButton.setAttribute("aria-disabled", String(downloadButton.disabled));
+  }
+
+  function clearResult() {
+    revokeUrl(resultObjectUrl);
+    resultObjectUrl = "";
+    resultPreview.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+    resultPreview.alt = "";
+    downloadButton.dataset.downloadName = "";
+  }
+
+  function handleSelection(file) {
+    if (!file?.type?.startsWith("image/")) {
       error.hidden = false;
+      error.textContent = getLanguage() === "pt"
+        ? "Escolha um arquivo de imagem válido."
+        : "Choose a valid image file.";
       return;
     }
 
+    currentJobId += 1;
+    currentFile = file;
     error.hidden = true;
-    clearPreviewUrl();
-    previewUrl = URL.createObjectURL(file);
-    preview.src = previewUrl;
+    clearResult();
+    setSourceUrl(URL.createObjectURL(file));
     preview.alt = file.name;
     fileName.textContent = file.name;
     fileSize.textContent = formatFileSize(file.size);
-    hasSelectedImage = true;
-    resultStatus.textContent = getStatusLabel("pending");
     emptyState.hidden = true;
     previewWrap.hidden = false;
     dropzone.classList.add("has-image");
+    setState("selected");
   }
 
-  input.addEventListener("change", () => showImage(input.files[0]));
+  function createProgressHandler(jobId) {
+    return (_key, current, total) => {
+      if (jobId !== currentJobId || currentState !== "processing" || total <= 0) return;
+      const percent = Math.min(100, Math.max(0, Math.round((current / total) * 100)));
+      resultStatus.textContent = getLabels().loading(percent);
+    };
+  }
+
+  async function runEngine(file, jobId, device) {
+    return removeBackground(file, {
+      device,
+      model: "isnet_fp16",
+      output: { format: "image/png", quality: 1 },
+      progress: createProgressHandler(jobId),
+    });
+  }
+
+  async function startProcessing() {
+    if (!currentFile || currentState === "processing") return;
+
+    currentJobId += 1;
+    const jobId = currentJobId;
+    const file = currentFile;
+    clearResult();
+    setState("processing");
+
+    try {
+      let blob;
+      const canUseGpu = "gpu" in navigator;
+
+      try {
+        blob = await runEngine(file, jobId, canUseGpu ? "gpu" : "cpu");
+      } catch (gpuError) {
+        if (!canUseGpu || jobId !== currentJobId) throw gpuError;
+        setState("processing", getLabels().fallback);
+        blob = await runEngine(file, jobId, "cpu");
+      }
+
+      if (jobId !== currentJobId) return;
+      if (!blob) throw new Error("The background-removal engine returned no image.");
+
+      const outputUrl = URL.createObjectURL(blob);
+      setResultUrl(outputUrl);
+      resultPreview.alt = `${file.name} — background removed`;
+      downloadButton.dataset.downloadName = `${file.name.replace(/\.[^.]+$/, "") || "image"}-removed.png`;
+      setState("ready");
+    } catch (processingError) {
+      if (jobId !== currentJobId) return;
+      console.error(processingError);
+      setState("error");
+    }
+  }
+
+  function handleFileList(fileList) {
+    const file = findImageFile(fileList);
+    if (file) handleSelection(file);
+    else handleSelection(null);
+  }
+
+  input.addEventListener("change", () => handleFileList(input.files));
 
   ["dragenter", "dragover"].forEach((eventName) => {
     dropzone.addEventListener(eventName, (event) => {
       event.preventDefault();
+      event.stopPropagation();
       if (eventName === "dragenter") dragDepth += 1;
       dropzone.classList.add("is-dragging");
     });
@@ -85,27 +207,41 @@ function initBackgroundRemover() {
 
   dropzone.addEventListener("dragleave", (event) => {
     event.preventDefault();
+    event.stopPropagation();
     dragDepth = Math.max(0, dragDepth - 1);
     if (dragDepth === 0) dropzone.classList.remove("is-dragging");
   });
 
   dropzone.addEventListener("drop", (event) => {
     event.preventDefault();
+    event.stopPropagation();
     dragDepth = 0;
     dropzone.classList.remove("is-dragging");
-
-    const [file] = event.dataTransfer.files;
-    showImage(file);
+    handleFileList(event.dataTransfer.files);
   });
 
-  const langToggle = document.getElementById("lang-toggle");
-  if (langToggle) {
-    langToggle.addEventListener("click", () => {
-      resultStatus.textContent = getStatusLabel(hasSelectedImage ? "pending" : "waiting");
-    });
-  }
+  processButton.addEventListener("click", startProcessing);
 
-  window.addEventListener("pagehide", clearPreviewUrl, { once: true });
+  downloadButton.addEventListener("click", () => {
+    if (!resultObjectUrl) return;
+    const link = document.createElement("a");
+    link.href = resultObjectUrl;
+    link.download = downloadButton.dataset.downloadName || "background-removed.png";
+    link.rel = "noopener";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  });
+
+  document.addEventListener("languageChange", () => setState(currentState));
+
+  window.addEventListener("pagehide", () => {
+    currentJobId += 1;
+    revokeUrl(sourcePreviewUrl);
+    revokeUrl(resultObjectUrl);
+  });
+
+  setState("waiting");
 }
 
 if (document.readyState === "loading") {
