@@ -39,6 +39,7 @@ index.html            # Home (hero, who/what/why)
 about.html             # About — narrative journey (Automation → EE → Software → Engineering Software)
 portfolio.html         # Engineering Portfolio (Software / Electrical / Research / Open Source)
 publications.html      # Publications & Studies (academic, articles, notes)
+articles/              # Article index linking project documentation
 technologies.html      # Technologies grouped by purpose, not a logo wall
 experience.html        # Experience timeline
 philosophy.html        # Philosophy statement
@@ -53,6 +54,16 @@ The site was built as a single scrolling page rather than separate HTML files, p
 ```
 index.html             # Single page: hero + About, Portfolio, Publications,
                         # Technologies, Experience, Philosophy, Contact sections
+articles/
+  index.html           # Bilingual index of project articles
+projects/
+  index.html           # Project index
+  net-salary-calculator/
+    index.html         # Calculator interface
+    article.html       # Calculator documentation
+  background-remover/
+    index.html         # Background remover interface
+    article.html       # Background remover documentation
 css/
   tokens.css            # Design tokens (dark theme palette, spacing, fluid type)
   main.css              # Layout, components, responsive nav, motion guards

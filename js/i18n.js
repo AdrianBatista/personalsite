@@ -25,6 +25,7 @@ const translations = {
       about: "About",
       portfolio: "Portfolio",
       publications: "Publications",
+      articles: "Articles",
       projects: "Projects",
       technologies: "Technologies",
       experience: "Experience",
@@ -160,6 +161,26 @@ const translations = {
         },
       },
     },
+    articles: {
+      title: "Articles",
+      description: "Technical notes and project documentation for the tools published on this site.",
+      meta: {
+        title: "Articles — Adrian Felipe Nogueira Batista",
+        description: "Technical articles and project documentation by Adrian Felipe Nogueira Batista.",
+      },
+      items: {
+        netSalary: {
+          category: "Payroll guide",
+          title: "How Net Salary Is Calculated",
+          description: "An explanation of the deductions, tax stages, and estimate produced by the Net Salary Calculator.",
+        },
+        backgroundRemover: {
+          category: "Image processing",
+          title: "How the Client-Side Background Remover Works",
+          description: "A practical overview of the local neural-segmentation workflow used to export transparent PNG images.",
+        },
+      },
+    },
     technologies: {
       heading: "Technologies",
       intro: "A toolkit built for engineering environments — developed and applied across industrial automation, power systems, and enterprise software.",
@@ -231,6 +252,7 @@ const translations = {
       about: "Sobre",
       portfolio: "Portfólio",
       publications: "Publicações",
+      articles: "Artigos",
       projects: "Projetos",
       technologies: "Tecnologias",
       experience: "Experiência",
@@ -363,6 +385,26 @@ const translations = {
           desc: "Uma ferramenta executada no navegador que remove fundos localmente e exporta um PNG transparente.",
           category: "Engenharia de Software",
           tags: { 0: "Web App", 1: "Processamento de Imagens", 2: "Cliente" },
+        },
+      },
+    },
+    articles: {
+      title: "Artigos",
+      description: "Notas técnicas e documentação dos projetos publicados neste site.",
+      meta: {
+        title: "Artigos — Adrian Felipe Nogueira Batista",
+        description: "Artigos técnicos e documentação de projetos de Adrian Felipe Nogueira Batista.",
+      },
+      items: {
+        netSalary: {
+          category: "Guia de folha de pagamento",
+          title: "Como o Salário Líquido É Calculado",
+          description: "Uma explicação das deduções, etapas tributárias e estimativa produzida pela Calculadora de Salário Líquido.",
+        },
+        backgroundRemover: {
+          category: "Processamento de imagens",
+          title: "Como o Removedor de Fundo Client-Side Funciona",
+          description: "Uma visão prática do fluxo local de segmentação neural usado para exportar imagens PNG transparentes.",
         },
       },
     },

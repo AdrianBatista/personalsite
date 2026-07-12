@@ -207,6 +207,12 @@ Smaller notes documenting learning.
 
 ---
 
+## Articles
+
+A dedicated index of published technical articles and project documentation. Each entry links to its source project article.
+
+---
+
 ## Technologies
 
 Instead of logo walls, organize by purpose.

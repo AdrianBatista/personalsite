@@ -30,6 +30,15 @@
   </url>
 
   <url>
+    <loc>https://adrianbatista.com/articles/</loc>
+    <lastmod>2026-07-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://adrianbatista.com/articles/?language=en"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://adrianbatista.com/articles/?language=pt"/>
+  </url>
+
+  <url>
     <loc>https://adrianbatista.com/projects/net-salary-calculator/article.html</loc>
     <lastmod>2026-07-11</lastmod>
     <changefreq>monthly</changefreq>
