@@ -159,6 +159,12 @@ const translations = {
           category: "Software Engineering",
           tags: { 0: "Web App", 1: "Image Processing", 2: "Client-Side" },
         },
+        uuidGenerator: {
+          title: "UUID Generator",
+          desc: "A browser-based UUID generator with version 4 as the default and version 1 and 7 options.",
+          category: "Software Engineering",
+          tags: { 0: "JavaScript", 1: "Web Tool", 2: "RFC 9562" },
+        },
       },
     },
     articles: {
@@ -178,6 +184,11 @@ const translations = {
           category: "Image processing",
           title: "How the Client-Side Background Remover Works",
           description: "A practical overview of the local neural-segmentation workflow used to export transparent PNG images.",
+        },
+        uuidGenerator: {
+          category: "Distributed systems",
+          title: "UUID: History, Motivation, Versions and Usage",
+          description: "A practical guide to the history, structure, versions, and correct use of UUIDs.",
         },
       },
     },
@@ -386,6 +397,12 @@ const translations = {
           category: "Engenharia de Software",
           tags: { 0: "Web App", 1: "Processamento de Imagens", 2: "Cliente" },
         },
+        uuidGenerator: {
+          title: "Gerador de UUID",
+          desc: "Um gerador de UUID no navegador, com versão 4 padrão e opções das versões 1 e 7.",
+          category: "Engenharia de Software",
+          tags: { 0: "JavaScript", 1: "Ferramenta Web", 2: "RFC 9562" },
+        },
       },
     },
     articles: {
@@ -405,6 +422,11 @@ const translations = {
           category: "Processamento de imagens",
           title: "Como o Removedor de Fundo Client-Side Funciona",
           description: "Uma visão prática do fluxo local de segmentação neural usado para exportar imagens PNG transparentes.",
+        },
+        uuidGenerator: {
+          category: "Sistemas distribuídos",
+          title: "UUID: História, Motivação, Versões e Uso",
+          description: "Um guia prático sobre a história, estrutura, versões e uso correto de UUIDs.",
         },
       },
     },
