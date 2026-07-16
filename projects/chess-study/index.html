@@ -220,6 +220,8 @@
             <button class="icon-button" id="pdf-zoom-in" type="button" data-i18n-aria-label="project.chessStudy.book.zoomIn" aria-label="Zoom in"><span aria-hidden="true">+</span></button>
           </div>
 
+          <button class="fit-button ocr-scan-button" id="ocr-scan" type="button" disabled data-i18n="project.chessStudy.ocr.scan">Scan diagrams</button>
+
           <details class="calibration">
             <summary data-i18n="project.chessStudy.book.settings">Column calibration</summary>
             <div class="calibration-fields">
@@ -244,9 +246,13 @@
         </div>
 
         <p class="book-position" id="book-position" aria-live="polite"></p>
+        <p class="ocr-status" id="ocr-status" aria-live="polite"></p>
         <div class="pdf-viewport" id="pdf-viewport">
           <div class="pdf-loading" id="pdf-loading" hidden role="status">Rendering…</div>
-          <canvas id="pdf-canvas" role="img" aria-label="PDF reading region"></canvas>
+          <div class="pdf-page-stage" id="pdf-page-stage">
+            <canvas id="pdf-canvas" role="img" aria-label="PDF reading region"></canvas>
+            <div class="pdf-diagram-layer" id="pdf-diagram-layer"></div>
+          </div>
         </div>
       </div>
 
@@ -256,6 +262,18 @@
       </div>
     </section>
   </main>
+
+  <dialog class="ocr-dialog" id="ocr-candidate-dialog" aria-labelledby="ocr-dialog-title">
+    <div class="ocr-dialog-header">
+      <div>
+        <p class="panel-kicker">OCR / PGN</p>
+        <h2 id="ocr-dialog-title" data-i18n="project.chessStudy.ocr.candidatesTitle">Choose the matching position</h2>
+      </div>
+      <button class="icon-button" type="button" id="ocr-dialog-close" data-i18n-aria-label="project.chessStudy.ocr.close" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <p class="ocr-dialog-intro" id="ocr-dialog-intro" data-i18n="project.chessStudy.ocr.candidatesText">The diagram was recognized, but more than one PGN position is plausible.</p>
+    <div class="ocr-candidate-list" id="ocr-candidate-list"></div>
+  </dialog>
 
   <div class="study-status" id="study-status" role="status" aria-live="polite"></div>
 </body>

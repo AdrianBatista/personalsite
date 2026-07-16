@@ -21,6 +21,8 @@ import {
   saveStoredSession,
 } from "./storage.js";
 import { splitPgnRecords } from "./pgn-records.js";
+import { createOcrController } from "./ocr/ocr-controller.js";
+import { buildPositionIndex } from "./ocr/position-index.js";
 
 const PROJECT_PATH = "/projects/chess-study/";
 const PDF_ASSET_PATH = `${PROJECT_PATH}vendor/pdfjs/`;
@@ -78,6 +80,22 @@ const TEXT = {
     loadPgn: "Load PGN",
     noValidGames: "No valid games were found.",
     result: "Result",
+    ocrScanning: "Scanning the current PDF page for chess diagrams…",
+    ocrReady: (count) =>
+      `${count} chess ${count === 1 ? "diagram" : "diagrams"} detected. Select one to match it with the PGN.`,
+    ocrNone: "No chess diagram was detected on this page.",
+    ocrNeedsPgn: "Load a PGN to match diagrams from the book.",
+    ocrRecognizing: "Reading the selected diagram and comparing PGN positions…",
+    ocrMatched: (game, move) => `Matched ${game}${move ? ` · ${move}` : ""}.`,
+    ocrAmbiguous: "Choose the matching PGN position.",
+    ocrMultipleMatches: (count) =>
+      `This position appears in ${count} PGN games. Choose which game to open.`,
+    ocrError: "The current page could not be analyzed.",
+    ocrRecognitionError: "The selected diagram could not be recognized.",
+    ocrDiagramLabel: (number) => `Analyze detected chess diagram ${number}`,
+    ocrStart: "Starting position",
+    ocrDifferences: (count) =>
+      `${count} ${count === 1 ? "square difference" : "square differences"}`,
   },
   pt: {
     unknown: "Desconhecido",
@@ -118,6 +136,23 @@ const TEXT = {
     loadPgn: "Carregar PGN",
     noValidGames: "Nenhuma partida válida foi encontrada.",
     result: "Resultado",
+    ocrScanning: "Procurando diagramas de xadrez na página atual do PDF…",
+    ocrReady: (count) =>
+      `${count} ${count === 1 ? "diagrama detectado" : "diagramas detectados"}. Selecione um para comparar com o PGN.`,
+    ocrNone: "Nenhum diagrama de xadrez foi detectado nesta página.",
+    ocrNeedsPgn: "Carregue um PGN para relacionar os diagramas do livro.",
+    ocrRecognizing: "Lendo o diagrama selecionado e comparando posições do PGN…",
+    ocrMatched: (game, move) =>
+      `Correspondência encontrada: ${game}${move ? ` · ${move}` : ""}.`,
+    ocrAmbiguous: "Escolha a posição correspondente no PGN.",
+    ocrMultipleMatches: (count) =>
+      `Esta posição aparece em ${count} partidas do PGN. Escolha qual partida abrir.`,
+    ocrError: "Não foi possível analisar a página atual.",
+    ocrRecognitionError: "Não foi possível reconhecer o diagrama selecionado.",
+    ocrDiagramLabel: (number) => `Analisar diagrama de xadrez ${number}`,
+    ocrStart: "Posição inicial",
+    ocrDifferences: (count) =>
+      `${count} ${count === 1 ? "diferença de casa" : "diferenças de casas"}`,
   },
 };
 
@@ -140,6 +175,7 @@ const state = {
   board: null,
   boardOrientation: "white",
   games: [],
+  positionIndex: [],
   selectedGameIndex: -1,
   selectedMove: null,
   pgnText: "",
@@ -149,6 +185,7 @@ const state = {
   pdfDocument: null,
   pdfLoadingTask: null,
   pdfRenderTask: null,
+  pdfRenderGeometry: null,
   pdfSettings: { ...DEFAULT_PDF_SETTINGS },
   restoring: false,
   storageWarningShown: false,
@@ -158,6 +195,8 @@ let elements;
 let statusTimer;
 let saveTimer;
 let resizeTimer;
+let ocrTimer;
+let ocrController;
 
 function labels() {
   return TEXT[getLanguage() === "pt" ? "pt" : "en"];
@@ -211,6 +250,8 @@ function queryElements() {
     pdfZoomOut: document.getElementById("pdf-zoom-out"),
     pdfZoomIn: document.getElementById("pdf-zoom-in"),
     pdfFit: document.getElementById("pdf-fit"),
+    ocrScan: document.getElementById("ocr-scan"),
+    ocrStatus: document.getElementById("ocr-status"),
     pdfSplit: document.getElementById("pdf-split"),
     pdfInnerMargin: document.getElementById("pdf-inner-margin"),
     pdfOuterMargin: document.getElementById("pdf-outer-margin"),
@@ -221,8 +262,14 @@ function queryElements() {
     bookPosition: document.getElementById("book-position"),
     pdfViewport: document.getElementById("pdf-viewport"),
     pdfCanvas: document.getElementById("pdf-canvas"),
+    pdfPageStage: document.getElementById("pdf-page-stage"),
+    pdfDiagramLayer: document.getElementById("pdf-diagram-layer"),
     pdfLoading: document.getElementById("pdf-loading"),
     bookPanel: document.getElementById("book-panel"),
+    ocrCandidateDialog: document.getElementById("ocr-candidate-dialog"),
+    ocrCandidateList: document.getElementById("ocr-candidate-list"),
+    ocrDialogIntro: document.getElementById("ocr-dialog-intro"),
+    ocrDialogClose: document.getElementById("ocr-dialog-close"),
   };
 }
 
@@ -243,6 +290,170 @@ function setFileActionLabels() {
   elements.pgnActionLabel.textContent = state.pgnText
     ? labels().replacePgn
     : labels().loadPgn;
+}
+
+function setOcrStatus(status, details = {}) {
+  elements.ocrScan.disabled = !(
+    state.pdfDocument && state.positionIndex.length
+  );
+  elements.ocrStatus.classList.toggle(
+    "is-ready",
+    status === "ready" || status === "matched",
+  );
+  elements.ocrStatus.classList.toggle(
+    "is-error",
+    status === "error" || status === "recognition-error",
+  );
+
+  const messages = {
+    idle: "",
+    "needs-pdf": "",
+    "needs-pgn": labels().ocrNeedsPgn,
+    scanning: labels().ocrScanning,
+    ready: labels().ocrReady(details.count || 0),
+    none: labels().ocrNone,
+    recognizing: labels().ocrRecognizing,
+    ambiguous: labels().ocrAmbiguous,
+    error: labels().ocrError,
+    "recognition-error": labels().ocrRecognitionError,
+  };
+  elements.ocrStatus.textContent = messages[status] || "";
+}
+
+function scheduleOcrAnalysis(force = false) {
+  window.clearTimeout(ocrTimer);
+  ocrTimer = window.setTimeout(
+    () => ocrController?.analyzeCurrentPage(force),
+    force ? 0 : 220,
+  );
+}
+
+function renderOcrDetections(detections) {
+  elements.pdfDiagramLayer.textContent = "";
+  const geometry = state.pdfRenderGeometry;
+  if (!geometry || geometry.pageNumber !== state.pdfSettings.pageNumber) return;
+
+  const visibleLeft = geometry.crop.x;
+  const visibleRight = geometry.crop.x + geometry.crop.width;
+  const visibleWidth = geometry.crop.width * geometry.renderScale;
+  const visibleHeight = geometry.baseHeight * geometry.renderScale;
+
+  detections.forEach((detection, index) => {
+    const box = detection.pageBox;
+    const intersectionLeft = Math.max(box.x, visibleLeft);
+    const intersectionRight = Math.min(box.x + box.width, visibleRight);
+    if (intersectionRight <= intersectionLeft) return;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "pdf-diagram-target";
+    button.classList.toggle(
+      "is-analyzing",
+      detection.status === "analyzing",
+    );
+    button.classList.toggle("is-matched", detection.status === "matched");
+    button.classList.toggle(
+      "is-ambiguous",
+      detection.status === "ambiguous",
+    );
+    button.classList.toggle("is-failed", detection.status === "failed");
+    button.dataset.diagramId = detection.id;
+    button.dataset.diagramNumber = String(index + 1);
+    button.setAttribute("aria-label", labels().ocrDiagramLabel(index + 1));
+    button.style.left = `${Math.max(
+      0,
+      (intersectionLeft - visibleLeft) * geometry.renderScale,
+    )}px`;
+    button.style.top = `${Math.max(0, box.y * geometry.renderScale)}px`;
+    button.style.width = `${Math.min(
+      visibleWidth,
+      (intersectionRight - intersectionLeft) * geometry.renderScale,
+    )}px`;
+    button.style.height = `${Math.min(
+      visibleHeight,
+      box.height * geometry.renderScale,
+    )}px`;
+    button.addEventListener("click", () =>
+      ocrController?.recognizeDetection(detection.id),
+    );
+    elements.pdfDiagramLayer.append(button);
+  });
+}
+
+function candidateMoveText(candidate) {
+  if (candidate.isStart) return labels().ocrStart;
+  return `${moveLabel(candidate)} ${candidate.san || ""}`.trim();
+}
+
+async function applyOcrCandidate(candidate) {
+  if (!candidate) return;
+  selectGame(candidate.gameIndex, candidate.moveId);
+  if (
+    candidate.orientation &&
+    candidate.orientation !== state.boardOrientation
+  ) {
+    state.boardOrientation = candidate.orientation;
+    await state.board.setOrientation(
+      candidate.orientation === "black" ? COLOR.black : COLOR.white,
+      false,
+    );
+  }
+  updateMobilePanel("board");
+  if (elements.ocrCandidateDialog.open) {
+    elements.ocrCandidateDialog.close();
+  }
+  const game = state.games[candidate.gameIndex];
+  const moveText = candidateMoveText(candidate);
+  elements.ocrStatus.classList.add("is-ready");
+  elements.ocrStatus.classList.remove("is-error");
+  elements.ocrStatus.textContent = labels().ocrMatched(
+    gameTitle(game),
+    moveText,
+  );
+  showStatus(labels().ocrMatched(gameTitle(game), moveText));
+}
+
+function showOcrCandidates(result) {
+  elements.ocrCandidateList.textContent = "";
+  const exactMatches = result.correspondingCandidates || [];
+  const candidates = exactMatches.length > 1 ? exactMatches : result.candidates;
+  elements.ocrDialogIntro.textContent =
+    exactMatches.length > 1
+      ? labels().ocrMultipleMatches(exactMatches.length)
+      : labels().ocrAmbiguous;
+
+  candidates.forEach((candidate) => {
+    const game = state.games[candidate.gameIndex];
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "ocr-candidate-button";
+
+    const title = document.createElement("span");
+    title.className = "ocr-candidate-title";
+    title.textContent = gameTitle(game);
+    const meta = document.createElement("span");
+    meta.className = "ocr-candidate-meta";
+    meta.textContent = `${candidateMoveText(candidate)} · ${labels().ocrDifferences(
+      candidate.mismatches,
+    )}`;
+    button.append(title, meta);
+    button.addEventListener("click", () => applyOcrCandidate(candidate));
+    elements.ocrCandidateList.append(button);
+  });
+
+  setOcrStatus("ambiguous");
+  if (!elements.ocrCandidateDialog.open) {
+    elements.ocrCandidateDialog.showModal();
+  }
+}
+
+function handleOcrResult(result) {
+  const exactMatches = result.correspondingCandidates || [];
+  if (result.confidence === "high" && exactMatches.length === 1) {
+    applyOcrCandidate(exactMatches[0]);
+  } else {
+    showOcrCandidates(result);
+  }
 }
 
 function formatHeader(value) {
@@ -600,6 +811,7 @@ async function loadPgnContent(text, fileName, restore = {}) {
   const { games, invalidCount } = parsePgnText(text);
   state.pgnText = text;
   state.games = games;
+  state.positionIndex = buildPositionIndex(games);
   state.selectedGameIndex = -1;
   state.selectedMove = null;
   elements.gameSearch.value = "";
@@ -612,6 +824,7 @@ async function loadPgnContent(text, fileName, restore = {}) {
   );
   selectGame(selectedIndex, restore.selectedMoveId || null);
   showStatus(labels().pgnReady(games.length, invalidCount));
+  scheduleOcrAnalysis();
 }
 
 async function handlePgnFile(file) {
@@ -643,6 +856,7 @@ async function handlePgnFile(file) {
 
 function resetPgn() {
   state.games = [];
+  state.positionIndex = [];
   state.selectedGameIndex = -1;
   state.selectedMove = null;
   state.pgnText = "";
@@ -658,6 +872,8 @@ function resetPgn() {
   elements.flipBoard.disabled = true;
   state.board?.setPosition(FEN.start, false);
   setFileActionLabels();
+  ocrController?.clear();
+  setOcrStatus(state.pdfDocument ? "needs-pgn" : "idle");
 }
 
 function pdfColumnName(column) {
@@ -737,9 +953,11 @@ async function renderPdfRegion() {
   state.pdfRenderTask?.cancel();
   elements.pdfLoading.hidden = false;
   elements.pdfLoading.textContent = labels().renderingPdf;
+  let renderCompleted = false;
 
   try {
-    const page = await state.pdfDocument.getPage(state.pdfSettings.pageNumber);
+    const pageNumber = state.pdfSettings.pageNumber;
+    const page = await state.pdfDocument.getPage(pageNumber);
     const baseViewport = page.getViewport({ scale: 1 });
     const crop = calculateCrop(baseViewport);
     const availableWidth = Math.max(
@@ -759,6 +977,13 @@ async function renderPdfRegion() {
     canvas.height = Math.max(1, Math.floor(cssHeight * outputScale));
     canvas.style.width = `${cssWidth}px`;
     canvas.style.height = `${cssHeight}px`;
+    state.pdfRenderGeometry = {
+      pageNumber,
+      crop,
+      renderScale,
+      baseWidth: baseViewport.width,
+      baseHeight: baseViewport.height,
+    };
 
     const transform = [
       outputScale,
@@ -776,6 +1001,7 @@ async function renderPdfRegion() {
       background: "#ffffff",
     });
     await state.pdfRenderTask.promise;
+    renderCompleted = true;
     elements.pdfViewport.scrollTo({ top: 0, left: 0 });
   } catch (error) {
     if (error?.name !== "RenderingCancelledException") {
@@ -785,6 +1011,10 @@ async function renderPdfRegion() {
   } finally {
     elements.pdfLoading.hidden = true;
     state.pdfRenderTask = null;
+    if (renderCompleted) {
+      ocrController?.refreshOverlays();
+      scheduleOcrAnalysis();
+    }
   }
 }
 
@@ -860,6 +1090,8 @@ function verifyPdfSignature(buffer) {
 
 async function loadPdfBlob(blob, fileName, restoredSettings = {}) {
   showStatus(labels().loadingPdf, false, 120000);
+  ocrController?.clear();
+  state.pdfRenderGeometry = null;
   const buffer = await blob.arrayBuffer();
   if (!verifyPdfSignature(buffer)) throw new Error(labels().invalidPdf);
 
@@ -908,6 +1140,7 @@ async function loadPdfBlob(blob, fileName, restoredSettings = {}) {
   updateCalibrationUi();
   setFileActionLabels();
   await fitPdfRegion(false);
+  setOcrStatus(state.positionIndex.length ? "scanning" : "needs-pgn");
   showStatus(labels().pdfReady(state.pdfDocument.numPages));
 }
 
@@ -996,6 +1229,7 @@ async function resetPdf() {
   state.pdfDocument = null;
   state.pdfLoadingTask = null;
   state.pdfRenderTask = null;
+  state.pdfRenderGeometry = null;
   state.pdfSettings = { ...DEFAULT_PDF_SETTINGS };
   elements.pdfInput.value = "";
   elements.pdfCanvas.width = 1;
@@ -1006,9 +1240,11 @@ async function resetPdf() {
   elements.bookFileName.textContent = "";
   elements.bookEmpty.hidden = false;
   elements.bookContent.hidden = true;
+  elements.pdfDiagramLayer.textContent = "";
   updatePdfControls();
   updateCalibrationUi();
   setFileActionLabels();
+  ocrController?.clear();
 
   try {
     await pdfDocument?.destroy();
@@ -1154,6 +1390,10 @@ function addEventListeners() {
     handlePgnFile(elements.pgnInput.files[0]),
   );
   elements.clearStudy.addEventListener("click", clearStudy);
+  elements.ocrScan.addEventListener("click", () => scheduleOcrAnalysis(true));
+  elements.ocrDialogClose.addEventListener("click", () =>
+    elements.ocrCandidateDialog.close(),
+  );
   addFileDropTarget(
     elements.boardPanel,
     isPgnFile,
@@ -1253,6 +1493,7 @@ function addEventListeners() {
     renderNotation();
     updateMoveControls();
     updatePdfControls();
+    ocrController?.refreshOverlays();
   });
 
   document.addEventListener("dragover", (event) => {
@@ -1268,6 +1509,7 @@ function addEventListeners() {
     resizeTimer = window.setTimeout(renderPdfRegion, 180);
   });
   window.addEventListener("pagehide", () => {
+    ocrController?.clear();
     state.pdfRenderTask?.cancel();
     state.pdfLoadingTask?.destroy();
   });
@@ -1275,12 +1517,21 @@ function addEventListeners() {
 
 async function init() {
   elements = queryElements();
+  ocrController = createOcrController({
+    getPdfDocument: () => state.pdfDocument,
+    getPageNumber: () => state.pdfSettings.pageNumber,
+    getPositionIndex: () => state.positionIndex,
+    onDetections: renderOcrDetections,
+    onStatus: setOcrStatus,
+    onResult: handleOcrResult,
+  });
   createBoard();
   addEventListeners();
   updateCalibrationUi();
   updatePdfControls();
   updateMoveControls();
   setFileActionLabels();
+  setOcrStatus("idle");
   await restoreSession();
 }
 

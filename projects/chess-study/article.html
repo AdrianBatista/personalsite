@@ -84,7 +84,7 @@
             <h2 class="subproject-section-title" data-i18n="project.chessStudy.article.architecture.title">Application architecture</h2>
             <div class="subproject-section-content">
               <p data-i18n="project.chessStudy.article.architecture.p1">The application remains a static set of HTML, CSS, and ES modules. PDF.js renders local PDF bytes, cm-pgn parses annotated multi-game PGNs, and cm-chessboard displays each parsed FEN position.</p>
-              <p data-i18n="project.chessStudy.article.architecture.p2">The panels share an explicit state model but navigate independently. That avoids unreliable automatic matching between a paragraph or diagram and a PGN position.</p>
+              <p data-i18n="project.chessStudy.article.architecture.p2">A local recognition pipeline detects printed diagrams on the active PDF page, classifies each square as empty, White, or Black, and ranks positions from the loaded PGN before navigating to a high-confidence match.</p>
             </div>
           </section>
 
@@ -108,9 +108,9 @@
             <h2 class="subproject-section-title" data-i18n="project.chessStudy.article.limitations.title">Current limitations</h2>
             <div class="subproject-section-content">
               <ul>
-                <li data-i18n="project.chessStudy.article.limitations.items.0">No OCR or automatic chess-diagram recognition.</li>
+                <li data-i18n="project.chessStudy.article.limitations.items.0">Diagram recognition currently targets axis-aligned monochrome printed boards; unfamiliar styles may require candidate confirmation.</li>
                 <li data-i18n="project.chessStudy.article.limitations.items.1">No engine analysis or PGN editing.</li>
-                <li data-i18n="project.chessStudy.article.limitations.items.2">Book and game positions are not automatically synchronized.</li>
+                <li data-i18n="project.chessStudy.article.limitations.items.2">Automatic matching requires the exact diagram position to exist in the loaded PGN.</li>
                 <li data-i18n="project.chessStudy.article.limitations.items.3">Browser storage may be cleared or evicted by the browser.</li>
               </ul>
             </div>

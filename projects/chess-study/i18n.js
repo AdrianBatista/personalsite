@@ -76,6 +76,13 @@ export default {
           reset: "Reset calibration",
           regionLabel: "Reading region",
         },
+        ocr: {
+          scan: "Scan diagrams",
+          close: "Close",
+          candidatesTitle: "Choose the matching position",
+          candidatesText:
+            "Choose which corresponding PGN game or position to open.",
+        },
         articleLink: "Read the implementation notes",
         article: {
           breadcrumb: "Article",
@@ -105,7 +112,7 @@ export default {
             p1:
               "The application remains a static set of HTML, CSS, and ES modules. PDF.js renders local PDF bytes, cm-pgn parses annotated multi-game PGNs, and cm-chessboard displays each parsed FEN position.",
             p2:
-              "The panels share an explicit state model but navigate independently. That avoids unreliable automatic matching between a paragraph or diagram and a PGN position.",
+              "A local recognition pipeline detects printed diagrams on the active PDF page, classifies each square as empty, White, or Black, and ranks positions from the loaded PGN before navigating to a high-confidence match.",
           },
           pdf: {
             title: "Rendering one PDF column",
@@ -124,9 +131,9 @@ export default {
           limitations: {
             title: "Current limitations",
             items: {
-              0: "No OCR or automatic chess-diagram recognition.",
+              0: "Diagram recognition currently targets axis-aligned monochrome printed boards; unfamiliar styles may require candidate confirmation.",
               1: "No engine analysis or PGN editing.",
-              2: "Book and game positions are not automatically synchronized.",
+              2: "Automatic matching requires the exact diagram position to exist in the loaded PGN.",
               3: "Browser storage may be cleared or evicted by the browser.",
             },
           },
@@ -211,6 +218,13 @@ export default {
           reset: "Restaurar calibração",
           regionLabel: "Região de leitura",
         },
+        ocr: {
+          scan: "Detectar diagramas",
+          close: "Fechar",
+          candidatesTitle: "Escolha a posição correspondente",
+          candidatesText:
+            "Escolha qual partida ou posição correspondente do PGN abrir.",
+        },
         articleLink: "Leia as notas de implementação",
         article: {
           breadcrumb: "Artigo",
@@ -240,7 +254,7 @@ export default {
             p1:
               "A aplicação permanece um conjunto estático de HTML, CSS e módulos ES. PDF.js renderiza os bytes locais do PDF, cm-pgn interpreta PGNs anotados com várias partidas e cm-chessboard exibe cada posição FEN.",
             p2:
-              "Os painéis compartilham um estado explícito, mas navegam de forma independente. Isso evita associações automáticas pouco confiáveis entre um parágrafo ou diagrama e uma posição PGN.",
+              "Um pipeline local detecta diagramas impressos na página atual do PDF, classifica cada casa como vazia, branca ou preta e ordena as posições do PGN carregado antes de navegar para uma correspondência de alta confiança.",
           },
           pdf: {
             title: "Renderizando uma coluna do PDF",
@@ -259,9 +273,9 @@ export default {
           limitations: {
             title: "Limitações atuais",
             items: {
-              0: "Sem OCR ou reconhecimento automático de diagramas.",
+              0: "O reconhecimento atualmente prioriza diagramas monocromáticos e alinhados; estilos desconhecidos podem exigir confirmação.",
               1: "Sem análise por engine ou edição de PGN.",
-              2: "As posições do livro e da partida não são sincronizadas automaticamente.",
+              2: "A correspondência automática exige que a posição exata do diagrama exista no PGN carregado.",
               3: "O armazenamento pode ser removido pelo navegador.",
             },
           },

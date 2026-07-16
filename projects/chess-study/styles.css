@@ -714,6 +714,28 @@ button {
   text-align: center;
 }
 
+.ocr-status {
+  margin: 0;
+  padding: 0.42rem var(--space-sm);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  text-align: center;
+}
+
+.ocr-status:empty {
+  display: none;
+}
+
+.ocr-status.is-ready {
+  color: var(--accent-green);
+}
+
+.ocr-status.is-error {
+  color: #f2b2b2;
+}
+
 .pdf-viewport {
   position: relative;
   min-height: 0;
@@ -731,12 +753,153 @@ button {
   text-align: center;
 }
 
+.pdf-page-stage {
+  position: relative;
+  width: fit-content;
+  margin: 0 auto;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.4);
+}
+
 #pdf-canvas {
   display: block;
   max-width: none;
-  margin: 0 auto;
   background: #fff;
-  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.4);
+}
+
+.pdf-diagram-layer {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pdf-diagram-target {
+  position: absolute;
+  display: grid;
+  padding: 0;
+  border: 2px solid var(--accent-blue);
+  border-radius: 2px;
+  background: rgba(79, 157, 255, 0.08);
+  color: var(--text-primary);
+  cursor: pointer;
+  opacity: 0.82;
+  pointer-events: auto;
+  place-items: start end;
+  transition:
+    opacity var(--duration-fast) ease,
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.pdf-diagram-target::after {
+  min-width: 1.35rem;
+  padding: 0.16rem 0.28rem;
+  border-radius: 0 0 0 var(--radius-sm);
+  background: var(--accent-blue);
+  color: var(--bg);
+  content: attr(data-diagram-number);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.pdf-diagram-target:hover,
+.pdf-diagram-target:focus-visible {
+  opacity: 1;
+  transform: scale(1.015);
+}
+
+.pdf-diagram-target.is-analyzing {
+  border-color: #e5b567;
+  background: rgba(229, 181, 103, 0.14);
+}
+
+.pdf-diagram-target.is-analyzing::after {
+  background: #e5b567;
+}
+
+.pdf-diagram-target.is-matched {
+  border-color: var(--accent-green);
+  background: rgba(95, 216, 143, 0.12);
+}
+
+.pdf-diagram-target.is-matched::after {
+  background: var(--accent-green);
+}
+
+.pdf-diagram-target.is-ambiguous,
+.pdf-diagram-target.is-failed {
+  border-color: #e5b567;
+}
+
+.ocr-dialog {
+  width: min(34rem, calc(100vw - 2rem));
+  max-height: min(42rem, calc(100dvh - 2rem));
+  padding: 0;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.65);
+}
+
+.ocr-dialog::backdrop {
+  background: rgba(4, 6, 8, 0.78);
+  backdrop-filter: blur(4px);
+}
+
+.ocr-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm);
+  border-bottom: 1px solid var(--border);
+}
+
+.ocr-dialog-header h2 {
+  margin-top: 0.2rem;
+  font-size: 0.95rem;
+}
+
+.ocr-dialog-intro {
+  padding: var(--space-sm);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+}
+
+.ocr-candidate-list {
+  display: grid;
+  gap: 1px;
+  background: var(--border);
+}
+
+.ocr-candidate-button {
+  display: grid;
+  gap: 0.3rem;
+  width: 100%;
+  padding: var(--space-sm);
+  border: 0;
+  background: var(--bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+}
+
+.ocr-candidate-button:hover,
+.ocr-candidate-button:focus-visible {
+  background: var(--bg-elevated-2);
+}
+
+.ocr-candidate-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.ocr-candidate-meta {
+  color: var(--text-muted);
+  font-size: 0.7rem;
 }
 
 .pdf-loading {
@@ -888,7 +1051,8 @@ button {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .study-status {
+  .study-status,
+  .pdf-diagram-target {
     transition: none;
   }
 }
