@@ -25,6 +25,12 @@ build/
 .next/
 out/
 
+# Vendored PDF.js runtime required by the Chess Study static deployment.
+!projects/chess-study/vendor/
+!projects/chess-study/vendor/pdfjs/
+!projects/chess-study/vendor/pdfjs/build/
+!projects/chess-study/vendor/pdfjs/build/**
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
