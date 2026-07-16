@@ -165,6 +165,12 @@ const translations = {
           category: "Software Engineering",
           tags: { 0: "JavaScript", 1: "Web Tool", 2: "RFC 9562" },
         },
+        chessStudy: {
+          title: "Chess Study Environment",
+          desc: "A private browser workspace that combines annotated PGN navigation with a one-column-at-a-time chess book reader.",
+          category: "Software Engineering",
+          tags: { 0: "JavaScript", 1: "PDF.js", 2: "Chess" },
+        },
       },
     },
     articles: {
@@ -189,6 +195,11 @@ const translations = {
           category: "Distributed systems",
           title: "UUID: History, Motivation, Versions and Usage",
           description: "A practical guide to the history, structure, versions, and correct use of UUIDs.",
+        },
+        chessStudy: {
+          category: "Interactive documents",
+          title: "Building a Local Chess Book Study Workspace",
+          description: "Architecture notes for combining annotated PGN navigation with a calibrated one-column PDF reader.",
         },
       },
     },
@@ -403,6 +414,12 @@ const translations = {
           category: "Engenharia de Software",
           tags: { 0: "JavaScript", 1: "Ferramenta Web", 2: "RFC 9562" },
         },
+        chessStudy: {
+          title: "Ambiente de Estudo de Xadrez",
+          desc: "Um ambiente privado no navegador que combina navegação por PGNs anotados com um leitor de livros por coluna.",
+          category: "Engenharia de Software",
+          tags: { 0: "JavaScript", 1: "PDF.js", 2: "Xadrez" },
+        },
       },
     },
     articles: {
@@ -427,6 +444,11 @@ const translations = {
           category: "Sistemas distribuídos",
           title: "UUID: História, Motivação, Versões e Uso",
           description: "Um guia prático sobre a história, estrutura, versões e uso correto de UUIDs.",
+        },
+        chessStudy: {
+          category: "Documentos interativos",
+          title: "Construindo um Ambiente Local para Estudo de Livros de Xadrez",
+          description: "Notas de arquitetura para combinar navegação de PGNs anotados com um leitor de PDF por coluna calibrável.",
         },
       },
     },
@@ -572,6 +594,13 @@ function applyTranslations(lang) {
     const value = getPath(dict, el.getAttribute("data-i18n-aria-label"));
     if (typeof value === "string") {
       el.setAttribute("aria-label", value);
+    }
+  });
+
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+    const value = getPath(dict, el.getAttribute("data-i18n-placeholder"));
+    if (typeof value === "string") {
+      el.setAttribute("placeholder", value);
     }
   });
 

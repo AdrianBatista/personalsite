@@ -23,6 +23,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Publications → Academic now shows the real thesis title and a 1–2 sentence summary (EN + translated PT resumo) above the repository link.
 - Completed the browser-only Background Remover with drag-and-drop upload, ONNX/IS-Net neural segmentation, WebGPU/CPU fallback, transparent preview, PNG download, bilingual copy, and an implementation article.
 - Added a bilingual UUID Generator with local v1, v4 (default), and v7 generation, copy support, project listing, and an article covering UUID history, motivation, versions, and usage.
+- Added a bilingual Chess Study Environment that loads local PDFs and annotated multi-game PGNs, provides game/variation navigation on a responsive chessboard, renders two-column books one calibrated column at a time, and restores the active study through IndexedDB.
+
+### Fixed
+
+- Chess Study now recognizes every game in compact PGN databases that omit conventional blank lines between headers, movetext, or adjacent records, and normalizes common zero-based castling notation (`0-0` / `0-0-0`) before parsing.
 
 ### Known gaps
 

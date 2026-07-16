@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="project.chessStudy.meta.title">Chess Study Environment — Adrian Felipe Nogueira Batista</title>
+  <meta name="description" content="Study chess books and their PGN game collections together in a private, browser-based workspace." data-i18n-content="project.chessStudy.meta.description">
+  <link rel="canonical" href="https://adrianbatista.com/projects/chess-study/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://adrianbatista.com/projects/chess-study/">
+  <meta property="og:title" content="Chess Study Environment — Adrian Felipe Nogueira Batista" data-i18n-content="project.chessStudy.meta.title">
+  <meta property="og:description" content="Study chess books and their PGN game collections together in a private, browser-based workspace." data-i18n-content="project.chessStudy.meta.description">
+  <meta property="og:image" content="https://adrianbatista.com/assets/social-preview.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/projects/chess-study/vendor/cm-chessboard/assets/chessboard.css">
+  <link rel="stylesheet" href="/projects/chess-study/vendor/cm-chessboard/assets/extensions/markers/markers.css">
+  <link rel="stylesheet" href="/projects/chess-study/styles.css">
+
+  <script type="module">
+    import { registerTranslations } from "/js/i18n.js";
+    import projectTranslations from "/projects/chess-study/i18n.js";
+
+    registerTranslations(projectTranslations);
+  </script>
+  <script type="module" src="/js/main.js"></script>
+  <script type="module" src="/projects/chess-study/app.js"></script>
+</head>
+<body class="chess-study-page">
+  <a class="skip-link" href="#workspace" data-i18n="nav.skip">Skip to content</a>
+
+  <header class="site-header" id="site-header" aria-label="Site navigation">
+    <div class="header-inner">
+      <a class="brand" href="/index.html#hero" data-i18n="nav.brand">AFNB</a>
+
+      <button
+        class="nav-toggle"
+        id="nav-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-nav"
+        data-i18n-aria-label="nav.menuToggleLabel"
+        aria-label="Toggle navigation menu"
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <ul>
+          <li><a href="/index.html#about" data-i18n="nav.about">About</a></li>
+          <li><a href="/index.html#portfolio" data-i18n="nav.portfolio">Portfolio</a></li>
+          <li><a href="/index.html#publications" data-i18n="nav.publications">Publications</a></li>
+          <li><a href="/articles/" data-i18n="nav.articles">Articles</a></li>
+          <li><a href="/projects/" data-i18n="nav.projects">Projects</a></li>
+          <li><a href="/index.html#technologies" data-i18n="nav.technologies">Technologies</a></li>
+          <li><a href="/index.html#experience" data-i18n="nav.experience">Experience</a></li>
+          <li><a href="/index.html#philosophy" data-i18n="nav.philosophy">Philosophy</a></li>
+          <li><a href="/index.html#contact" data-i18n="nav.contact">Contact</a></li>
+        </ul>
+
+        <button
+          class="lang-toggle"
+          id="lang-toggle"
+          type="button"
+          data-i18n-aria-label="nav.langToggleLabel"
+          aria-label="Switch language"
+        >
+          <span class="lang-option" data-lang-option="en">EN</span>
+          <span class="lang-sep" aria-hidden="true">/</span>
+          <span class="lang-option" data-lang-option="pt">PT</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <nav class="study-mobile-tabs" aria-label="Workspace panels" data-i18n-aria-label="project.chessStudy.tabs.label">
+    <button class="study-mobile-tab is-active" type="button" data-panel-target="games" aria-controls="games-panel" aria-selected="true" data-i18n="project.chessStudy.tabs.games">Games</button>
+    <button class="study-mobile-tab" type="button" data-panel-target="board" aria-controls="board-panel" aria-selected="false" data-i18n="project.chessStudy.tabs.board">Board</button>
+    <button class="study-mobile-tab" type="button" data-panel-target="book" aria-controls="book-panel" aria-selected="false" data-i18n="project.chessStudy.tabs.book">Book</button>
+  </nav>
+
+  <main class="study-workspace" id="workspace">
+    <section class="study-panel games-panel is-mobile-active" id="games-panel" data-panel="games" aria-labelledby="games-heading">
+      <header class="panel-header">
+        <div>
+          <p class="panel-kicker">PGN</p>
+          <h2 id="games-heading" data-i18n="project.chessStudy.games.title">Games</h2>
+        </div>
+        <div class="panel-header-actions">
+          <label class="panel-action panel-action-primary" for="pgn-file">
+            <span aria-hidden="true">♞</span>
+            <span id="pgn-action-label" data-i18n="project.chessStudy.loadPgn">Load PGN</span>
+          </label>
+          <input id="pgn-file" class="visually-hidden" type="file" accept=".pgn,application/x-chess-pgn,text/plain">
+          <span class="panel-count" id="game-count">0</span>
+        </div>
+      </header>
+
+      <div class="games-search">
+        <label class="visually-hidden" for="game-search" data-i18n="project.chessStudy.games.searchLabel">Filter games</label>
+        <input id="game-search" type="search" placeholder="Player, event, ECO…" data-i18n-placeholder="project.chessStudy.games.searchPlaceholder" autocomplete="off" disabled>
+      </div>
+
+      <div class="panel-scroll">
+        <div class="panel-empty" id="games-empty">
+          <span class="empty-symbol" aria-hidden="true">♟</span>
+          <h3 data-i18n="project.chessStudy.games.emptyTitle">No PGN loaded</h3>
+          <p data-i18n="project.chessStudy.games.emptyText">Load a PGN file to browse its games, annotations, and variations.</p>
+        </div>
+        <p class="panel-empty compact-empty" id="games-no-results" hidden data-i18n="project.chessStudy.games.noResults">No games match this filter.</p>
+        <ol class="game-list" id="game-list" aria-label="PGN games"></ol>
+      </div>
+    </section>
+
+    <section class="study-panel board-panel" id="board-panel" data-panel="board" aria-labelledby="board-heading">
+      <header class="panel-header board-panel-header">
+        <div>
+          <p class="panel-kicker">PGN / FEN</p>
+          <h2 id="board-heading" data-i18n="project.chessStudy.board.title">Game board</h2>
+        </div>
+        <div class="panel-header-actions">
+          <button class="icon-button" id="flip-board" type="button" disabled data-i18n-aria-label="project.chessStudy.board.flip" aria-label="Flip board" title="Flip board">
+            <span aria-hidden="true">↻</span>
+          </button>
+          <button class="panel-action panel-action-danger" id="clear-study" type="button" data-i18n="project.chessStudy.clear">Clear study</button>
+        </div>
+      </header>
+
+      <div class="board-empty panel-empty" id="board-empty">
+        <span class="empty-symbol" aria-hidden="true">♜</span>
+        <h3 data-i18n="project.chessStudy.board.emptyTitle">Choose a PGN</h3>
+        <p data-i18n="project.chessStudy.board.emptyText">The selected game's position, moves, comments, and variations will appear here.</p>
+      </div>
+
+      <div class="board-content" id="board-content" hidden>
+        <div class="game-summary">
+          <div class="players">
+            <p><span class="player-color white-piece" aria-hidden="true">♔</span><strong id="white-player">—</strong><span id="white-elo"></span></p>
+            <p><span class="player-color black-piece" aria-hidden="true">♚</span><strong id="black-player">—</strong><span id="black-elo"></span></p>
+          </div>
+          <dl class="game-facts">
+            <div><dt data-i18n="project.chessStudy.board.result">Result</dt><dd id="game-result">—</dd></div>
+            <div><dt data-i18n="project.chessStudy.board.event">Event</dt><dd id="game-event">—</dd></div>
+            <div><dt data-i18n="project.chessStudy.board.date">Date</dt><dd id="game-date">—</dd></div>
+            <div><dt data-i18n="project.chessStudy.board.round">Round</dt><dd id="game-round">—</dd></div>
+          </dl>
+        </div>
+
+        <div class="board-stage">
+          <div id="chessboard"></div>
+        </div>
+
+        <div class="move-controls" role="group" aria-label="Move navigation">
+          <button class="icon-button" id="move-first" type="button" disabled data-i18n-aria-label="project.chessStudy.board.first" aria-label="Initial position"><span aria-hidden="true">|‹</span></button>
+          <button class="icon-button" id="move-previous" type="button" disabled data-i18n-aria-label="project.chessStudy.board.previous" aria-label="Previous move"><span aria-hidden="true">‹</span></button>
+          <p class="move-status" id="move-status" aria-live="polite">0 / 0</p>
+          <button class="icon-button" id="move-next" type="button" disabled data-i18n-aria-label="project.chessStudy.board.next" aria-label="Next move"><span aria-hidden="true">›</span></button>
+          <button class="icon-button" id="move-last" type="button" disabled data-i18n-aria-label="project.chessStudy.board.last" aria-label="Final position"><span aria-hidden="true">›|</span></button>
+        </div>
+
+        <section class="notation-section" aria-labelledby="notation-heading">
+          <h3 id="notation-heading" data-i18n="project.chessStudy.board.moves">Moves and annotations</h3>
+          <div class="notation" id="notation"></div>
+        </section>
+        <p class="visually-hidden" id="position-description" aria-live="polite"></p>
+      </div>
+
+      <div class="panel-drop-overlay" aria-hidden="true">
+        <span aria-hidden="true">♞</span>
+        <p data-i18n="project.chessStudy.board.dropPgn">Drop a PGN file to load the games</p>
+      </div>
+    </section>
+
+    <section class="study-panel book-panel" id="book-panel" data-panel="book" aria-labelledby="book-heading" tabindex="-1">
+      <header class="panel-header book-panel-header">
+        <div>
+          <p class="panel-kicker">PDF</p>
+          <h2 id="book-heading" data-i18n="project.chessStudy.book.title">Book</h2>
+        </div>
+        <div class="panel-header-actions">
+          <label class="panel-action panel-action-primary" for="pdf-file">
+            <span aria-hidden="true">▤</span>
+            <span id="pdf-action-label" data-i18n="project.chessStudy.loadPdf">Load PDF</span>
+          </label>
+          <input id="pdf-file" class="visually-hidden" type="file" accept=".pdf,application/pdf">
+          <p class="book-file-name" id="book-file-name"></p>
+        </div>
+      </header>
+
+      <div class="book-empty panel-empty" id="book-empty">
+        <span class="empty-symbol" aria-hidden="true">▥</span>
+        <h3 data-i18n="project.chessStudy.book.emptyTitle">No PDF loaded</h3>
+        <p data-i18n="project.chessStudy.book.emptyText">Load a two-column chess book. The reader displays one column at a time.</p>
+      </div>
+
+      <div class="book-content" id="book-content" hidden>
+        <div class="book-controls">
+          <button class="icon-button" id="pdf-previous" type="button" data-i18n-aria-label="project.chessStudy.book.previous" aria-label="Previous column"><span aria-hidden="true">‹</span></button>
+          <label class="page-control">
+            <span data-i18n="project.chessStudy.book.page">Page</span>
+            <input id="pdf-page" type="number" min="1" value="1" inputmode="numeric">
+            <span><span data-i18n="project.chessStudy.book.of">of</span> <strong id="pdf-page-count">0</strong></span>
+          </label>
+          <button class="icon-button" id="pdf-next" type="button" data-i18n-aria-label="project.chessStudy.book.next" aria-label="Next column"><span aria-hidden="true">›</span></button>
+
+          <div class="column-toggle" role="group" aria-label="Reading region" data-i18n-aria-label="project.chessStudy.book.regionLabel">
+            <button class="column-button is-active" type="button" data-pdf-column="left" data-i18n="project.chessStudy.book.left">Left</button>
+            <button class="column-button" type="button" data-pdf-column="right" data-i18n="project.chessStudy.book.right">Right</button>
+            <button class="column-button" type="button" data-pdf-column="full" data-i18n="project.chessStudy.book.full">Full page</button>
+          </div>
+
+          <div class="zoom-controls">
+            <button class="icon-button" id="pdf-zoom-out" type="button" data-i18n-aria-label="project.chessStudy.book.zoomOut" aria-label="Zoom out"><span aria-hidden="true">−</span></button>
+            <button class="fit-button" id="pdf-fit" type="button" data-i18n="project.chessStudy.book.fit">Fit column</button>
+            <button class="icon-button" id="pdf-zoom-in" type="button" data-i18n-aria-label="project.chessStudy.book.zoomIn" aria-label="Zoom in"><span aria-hidden="true">+</span></button>
+          </div>
+
+          <details class="calibration">
+            <summary data-i18n="project.chessStudy.book.settings">Column calibration</summary>
+            <div class="calibration-fields">
+              <div class="calibration-field">
+                <label for="pdf-split" data-i18n="project.chessStudy.book.split">Column split</label>
+                <output id="split-output" for="pdf-split">50%</output>
+                <input id="pdf-split" type="range" min="42" max="58" value="50">
+              </div>
+              <div class="calibration-field">
+                <label for="pdf-inner-margin" data-i18n="project.chessStudy.book.innerMargin">Center trim</label>
+                <output id="inner-output" for="pdf-inner-margin">1%</output>
+                <input id="pdf-inner-margin" type="range" min="0" max="6" value="1">
+              </div>
+              <div class="calibration-field">
+                <label for="pdf-outer-margin" data-i18n="project.chessStudy.book.outerMargin">Outer trim</label>
+                <output id="outer-output" for="pdf-outer-margin">2%</output>
+                <input id="pdf-outer-margin" type="range" min="0" max="10" value="2">
+              </div>
+              <button class="fit-button" id="pdf-reset-calibration" type="button" data-i18n="project.chessStudy.book.reset">Reset calibration</button>
+            </div>
+          </details>
+        </div>
+
+        <p class="book-position" id="book-position" aria-live="polite"></p>
+        <div class="pdf-viewport" id="pdf-viewport">
+          <div class="pdf-loading" id="pdf-loading" hidden role="status">Rendering…</div>
+          <canvas id="pdf-canvas" role="img" aria-label="PDF reading region"></canvas>
+        </div>
+      </div>
+
+      <div class="panel-drop-overlay" aria-hidden="true">
+        <span aria-hidden="true">▥</span>
+        <p data-i18n="project.chessStudy.book.dropPdf">Drop a PDF file to load the book</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="study-status" id="study-status" role="status" aria-live="polite"></div>
+</body>
+</html>

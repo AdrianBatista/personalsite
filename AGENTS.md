@@ -64,6 +64,10 @@ projects/
   background-remover/
     index.html         # Background remover interface
     article.html       # Background remover documentation
+  chess-study/
+    index.html         # Local PDF + annotated PGN chess study workspace
+    article.html       # Architecture and implementation documentation
+    vendor/            # Pinned browser modules and license/provenance notes
 css/
   tokens.css            # Design tokens (dark theme palette, spacing, fluid type)
   main.css              # Layout, components, responsive nav, motion guards

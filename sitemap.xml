@@ -65,4 +65,22 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://adrianbatista.com/projects/background-remover/article.html?language=pt"/>
   </url>
 
+  <url>
+    <loc>https://adrianbatista.com/projects/chess-study/</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://adrianbatista.com/projects/chess-study/?language=en"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://adrianbatista.com/projects/chess-study/?language=pt"/>
+  </url>
+
+  <url>
+    <loc>https://adrianbatista.com/projects/chess-study/article.html</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://adrianbatista.com/projects/chess-study/article.html?language=en"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://adrianbatista.com/projects/chess-study/article.html?language=pt"/>
+  </url>
+
 </urlset>
