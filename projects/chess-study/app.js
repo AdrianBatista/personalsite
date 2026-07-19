@@ -36,6 +36,7 @@ import { createOcrController } from "./ocr/ocr-controller.js";
 import { buildPositionIndex } from "./ocr/position-index.js";
 import {
   appendPgnRecord,
+  buildFreeAnalysisPgn,
   buildOcrPositionPgn,
 } from "./ocr/generated-game.js";
 import {
@@ -256,6 +257,7 @@ const state = {
   positionIndex: [],
   selectedGameIndex: -1,
   selectedMove: null,
+  analysisFen: FEN.start,
   pgnText: "",
   pgnFileName: "",
   pdfBlob: null,
@@ -270,6 +272,7 @@ const state = {
   pendingBoardMove: null,
   pendingBoardMoveTimer: null,
   promotionPending: false,
+  creatingAnalysisGame: false,
   engineStatus: "off",
   engineLines: [],
   engineMeta: { depth: 0, targetDepth: 16 },
@@ -479,9 +482,9 @@ function receiveEngineAnalysis(lines, meta) {
 
 function analyzeCurrentPosition(fen = null, game = null) {
   const selectedGame = game || state.games[state.selectedGameIndex];
-  if (!selectedGame) return;
-  const currentFen =
-    fen || state.selectedMove?.fen || selectedGame.startFen || FEN.start;
+  const currentFen = selectedGame
+    ? fen || state.selectedMove?.fen || selectedGame.startFen || FEN.start
+    : fen || state.analysisFen || FEN.start;
   state.engineLines = [];
   state.engineMeta = {
     depth: 0,
@@ -492,7 +495,7 @@ function analyzeCurrentPosition(fen = null, game = null) {
     fen: currentFen,
     depth: state.engineMeta.targetDepth,
     multiPv: 3,
-    chess960: Boolean(selectedGame.pgn.history.props.chess960),
+    chess960: Boolean(selectedGame?.pgn.history.props.chess960),
   });
 }
 
@@ -912,19 +915,20 @@ function parsePgnText(text) {
 
 function currentBoardMoveContext() {
   const game = state.games[state.selectedGameIndex];
-  if (!game) return null;
   return {
     game,
     gameIndex: state.selectedGameIndex,
     previous: state.selectedMove,
-    fen: state.selectedMove?.fen || game.startFen,
+    fen: state.selectedMove?.fen || game?.startFen || state.analysisFen,
   };
 }
 
 function boardMoveContextIsCurrent(context) {
   return Boolean(
-    context &&
-      state.games[context.gameIndex] === context.game &&
+      context &&
+      (context.game
+        ? state.games[context.gameIndex] === context.game
+        : context.gameIndex === -1 && !state.games.length) &&
       state.selectedGameIndex === context.gameIndex &&
       state.selectedMove === context.previous,
   );
@@ -942,10 +946,34 @@ function reindexEditedGame(game) {
   indexMoveTree(game.moves, `g${game.recordIndex}-m`, game.moveById);
 }
 
+async function createAnalysisGameAndCommit(context, notation) {
+  if (state.creatingAnalysisGame) return;
+  state.creatingAnalysisGame = true;
+
+  try {
+    const record = buildFreeAnalysisPgn(context.fen || FEN.start);
+    await loadPgnContent(record, "free-analysis.pgn", {
+      skipOcrAnalysis: true,
+    });
+    const gameContext = currentBoardMoveContext();
+    if (gameContext?.game) commitBoardMove(gameContext, notation);
+  } catch (error) {
+    console.warn("Free analysis PGN could not be created.", error);
+    updateBoardPosition();
+    showStatus(error.message || labels().fileError, true);
+  } finally {
+    state.creatingAnalysisGame = false;
+  }
+}
+
 function commitBoardMove(context, notation) {
   if (!boardMoveContextIsCurrent(context)) return;
 
   try {
+    if (!context.game) {
+      createAnalysisGameAndCommit(context, notation);
+      return;
+    }
     const result = addMoveToGame(context.game, notation, context.previous);
     if (result.changed) {
       const renderedPgn = context.game.pgn.render();
@@ -1012,7 +1040,7 @@ function handleBoardMoveInput(event) {
     const legalMove = validateMoveFromFen(
       context.fen,
       notation,
-      context.game.pgn.history.props.chess960,
+      context.game?.pgn.history.props.chess960 || false,
     );
     if (!legalMove) return false;
 
@@ -1206,6 +1234,7 @@ function lastMoveFrom(startMove) {
 function updateMoveControls() {
   const game = state.games[state.selectedGameIndex];
   const hasGame = Boolean(game);
+  const standalone = !hasGame && state.selectedGameIndex === -1;
   const nextMove = state.selectedMove ? state.selectedMove.next : game?.moves[0];
   const lastMove = game
     ? lastMoveFrom(state.selectedMove || game.moves[0])
@@ -1216,8 +1245,8 @@ function updateMoveControls() {
   elements.moveNext.disabled = !hasGame || !nextMove;
   elements.moveLast.disabled =
     !hasGame || !lastMove || state.selectedMove === lastMove;
-  elements.flipBoard.disabled = !hasGame;
-  elements.engineDepth.disabled = !hasGame;
+  elements.flipBoard.disabled = !(hasGame || standalone);
+  elements.engineDepth.disabled = !(hasGame || standalone);
 
   if (!state.selectedMove) {
     elements.moveStatus.textContent = labels().start;
@@ -1231,8 +1260,10 @@ function updateMoveControls() {
 
 async function updateBoardPosition() {
   const game = state.games[state.selectedGameIndex];
-  if (!game || !state.board) return;
-  const fen = state.selectedMove?.fen || game.startFen;
+  if (!state.board) return;
+  const fen = game
+    ? state.selectedMove?.fen || game.startFen
+    : state.analysisFen || FEN.start;
   const animate = !window.matchMedia(
     "(prefers-reduced-motion: reduce)",
   ).matches;
@@ -1246,12 +1277,12 @@ async function updateBoardPosition() {
   }
   updateBoardMoveQuality();
 
-  const description = state.selectedMove
+  const description = game && state.selectedMove
     ? `${gameTitle(game)}. ${labels().movePosition(
         moveLabel(state.selectedMove),
         state.selectedMove.san,
       )}. FEN ${fen}`
-    : `${gameTitle(game)}. ${labels().start}. FEN ${fen}`;
+    : `${game ? `${gameTitle(game)}. ` : ""}${labels().start}. FEN ${fen}`;
   elements.positionDescription.textContent = description;
 }
 
@@ -1305,6 +1336,7 @@ async function loadPgnContent(text, fileName, restore = {}) {
   state.positionIndex = buildPositionIndex(games);
   state.selectedGameIndex = -1;
   state.selectedMove = null;
+  state.analysisFen = FEN.start;
   elements.gameSearch.value = "";
   setPgnUiLoaded(fileName, games.length);
   renderGameList();
@@ -1348,6 +1380,7 @@ async function handlePgnFile(file) {
 function resetPgn() {
   moveAnalysisToken += 1;
   moveAnalysisController?.controller.stop();
+  state.creatingAnalysisGame = false;
   state.engineStatus = "off";
   state.engineLines = [];
   state.engineMeta = { depth: 0, targetDepth: 16 };
@@ -1364,14 +1397,15 @@ function resetPgn() {
   elements.gameCount.textContent = "0";
   elements.gamesEmpty.hidden = false;
   elements.gamesNoResults.hidden = true;
-  elements.boardEmpty.hidden = false;
-  elements.boardContent.hidden = true;
-  elements.flipBoard.disabled = true;
+  elements.boardEmpty.hidden = true;
+  elements.boardContent.hidden = false;
+  elements.flipBoard.disabled = false;
   state.board?.setPosition(FEN.start, false);
   setFileActionLabels();
   ocrController?.clear();
   setOcrStatus("idle");
   renderEngineAnalysis();
+  updateBoardPosition();
 }
 
 function pdfColumnName(column) {
@@ -2064,6 +2098,9 @@ async function init() {
   setFileActionLabels();
   setOcrStatus("idle");
   renderEngineAnalysis();
+  elements.boardEmpty.hidden = true;
+  elements.boardContent.hidden = false;
+  updateBoardPosition();
   await restoreSession();
 }
 

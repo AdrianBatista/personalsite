@@ -30,3 +30,20 @@ export function buildOcrPositionPgn(
     "*",
   ].join("\n");
 }
+
+export function buildFreeAnalysisPgn(fen) {
+  const date = new Date().toISOString().slice(0, 10).replaceAll("-", ".");
+  return [
+    '[Event "Free analysis"]',
+    '[Site "Local chess study"]',
+    `[Date "${date}"]`,
+    '[Round "?"]',
+    '[White "White"]',
+    '[Black "Black"]',
+    '[Result "*"]',
+    '[SetUp "1"]',
+    `[FEN "${escapePgnTag(fen)}"]`,
+    "",
+    "*",
+  ].join("\n");
+}
