@@ -43,6 +43,7 @@ import {
   evaluationToWhiteShare,
   formatEvaluation,
 } from "./engine-analysis.js";
+import { classifyMove } from "./move-classification.js";
 
 const PROJECT_PATH = "/projects/chess-study/";
 const PDF_ASSET_PATH = `${PROJECT_PATH}vendor/pdfjs/`;
@@ -135,6 +136,17 @@ const TEXT = {
     engineEqual: "Equal position",
     engineWhiteAdvantage: (score) => `White advantage ${score}`,
     engineBlackAdvantage: (score) => `Black advantage ${score}`,
+    moveQuality: {
+      brilliant: "Brilliant",
+      great: "Great",
+      best: "Best",
+      excellent: "Excellent",
+      good: "Good",
+      inaccuracy: "Inaccuracy",
+      mistake: "Mistake",
+      missedWin: "Missed win",
+      blunder: "Blunder",
+    },
   },
   pt: {
     unknown: "Desconhecido",
@@ -208,6 +220,17 @@ const TEXT = {
     engineEqual: "Posição equilibrada",
     engineWhiteAdvantage: (score) => `Vantagem das Brancas ${score}`,
     engineBlackAdvantage: (score) => `Vantagem das Pretas ${score}`,
+    moveQuality: {
+      brilliant: "Brilhante",
+      great: "Ótimo",
+      best: "Melhor",
+      excellent: "Excelente",
+      good: "Bom",
+      inaccuracy: "Imprecisão",
+      mistake: "Erro",
+      missedWin: "Chance perdida",
+      blunder: "Capivarada",
+    },
   },
 };
 
@@ -259,6 +282,8 @@ let resizeTimer;
 let ocrTimer;
 let ocrController;
 let engineController;
+let moveAnalysisController;
+let moveAnalysisToken = 0;
 
 function labels() {
   return TEXT[getLanguage() === "pt" ? "pt" : "en"];
@@ -307,6 +332,7 @@ function queryElements() {
     advantageMeter: document.getElementById("advantage-meter"),
     advantageWhiteFill: document.getElementById("advantage-white-fill"),
     advantageScore: document.getElementById("advantage-score"),
+    boardMoveQuality: document.getElementById("board-move-quality"),
     bookEmpty: document.getElementById("book-empty"),
     bookContent: document.getElementById("book-content"),
     bookFileName: document.getElementById("book-file-name"),
@@ -468,6 +494,86 @@ function analyzeCurrentPosition(fen = null, game = null) {
     multiPv: 3,
     chess960: Boolean(selectedGame.pgn.history.props.chess960),
   });
+}
+
+function updateBoardMoveQuality() {
+  const badge = elements.boardMoveQuality;
+  const move = state.selectedMove;
+  const quality = move?.quality;
+  if (!quality || !move.to) {
+    badge.hidden = true;
+    return;
+  }
+
+  const file = move.to.charCodeAt(0) - 97;
+  const rank = Number(move.to[1]);
+  const x = state.boardOrientation === "white" ? file : 7 - file;
+  const y = state.boardOrientation === "white" ? 8 - rank : rank - 1;
+  badge.className = `board-move-quality quality-${quality.className}`;
+  badge.textContent = quality.symbol;
+  badge.title = labels().moveQuality[quality.key];
+  badge.style.setProperty("--quality-file", String(x));
+  badge.style.setProperty("--quality-rank", String(y));
+  badge.hidden = false;
+}
+
+function mainLineMoves(game) {
+  const moves = [];
+  let move = game.moves[0];
+  while (move) {
+    moves.push(move);
+    move = move.next;
+  }
+  return moves;
+}
+
+function analyzeMoveQualityPosition(fen, chess960, token) {
+  return new Promise((resolve, reject) => {
+    let latestLines = [];
+    const onAnalysis = (lines, meta) => {
+      if (token !== moveAnalysisToken) return;
+      latestLines = lines;
+      if (meta.status === "complete") resolve(latestLines);
+    };
+    const onState = (status) => {
+      if (token !== moveAnalysisToken) return;
+      if (status === "error") reject(new Error("Move analysis failed"));
+    };
+    moveAnalysisController.callbacks = { onAnalysis, onState };
+    moveAnalysisController.controller.analyze({
+      fen,
+      depth: Math.min(12, Number(elements.engineDepth.value) || 12),
+      multiPv: 2,
+      chess960,
+    });
+  });
+}
+
+async function classifyGameMoves(game) {
+  const token = ++moveAnalysisToken;
+  const moves = mainLineMoves(game);
+  if (!moves.length || moves.every((move) => move.quality)) return;
+  const chess960 = Boolean(game.pgn.history.props.chess960);
+  let beforeLines;
+
+  try {
+    beforeLines = await analyzeMoveQualityPosition(game.startFen, chess960, token);
+    for (const move of moves) {
+      if (token !== moveAnalysisToken || state.games[state.selectedGameIndex] !== game) return;
+      const afterLines = await analyzeMoveQualityPosition(move.fen, chess960, token);
+      move.quality = classifyMove({
+        move,
+        beforeLines,
+        afterEvaluation: afterLines[0]?.evaluation,
+        afterLines,
+      });
+      beforeLines = afterLines;
+      renderNotation();
+      updateBoardMoveQuality();
+    }
+  } catch (error) {
+    if (token === moveAnalysisToken) console.warn("Move classification stopped.", error);
+  }
 }
 
 function setFileActionLabels() {
@@ -857,6 +963,7 @@ function commitBoardMove(context, notation) {
     renderNotation();
     updateMoveControls();
     updateBoardPosition();
+    if (result.changed) classifyGameMoves(context.game);
     scheduleSave();
 
     const message = result.changed
@@ -1039,6 +1146,15 @@ function renderMoveSequence(container, moves, isVariation = false) {
     button.className = "move-button";
     button.dataset.moveId = move.studyId;
     button.textContent = move.san;
+    if (move.quality) {
+      const quality = document.createElement("span");
+      const qualityName = labels().moveQuality[move.quality.key];
+      quality.className = `move-quality quality-${move.quality.className}`;
+      quality.textContent = move.quality.symbol;
+      quality.title = `${qualityName} · ${move.quality.loss} cp`;
+      quality.setAttribute("aria-label", qualityName);
+      button.append(quality);
+    }
     if (state.selectedMove === move) {
       button.classList.add("is-active");
       button.setAttribute("aria-current", "true");
@@ -1128,6 +1244,7 @@ async function updateBoardPosition() {
     state.board.addMarker(MARKER_TYPE.framePrimary, state.selectedMove.from);
     state.board.addMarker(MARKER_TYPE.framePrimary, state.selectedMove.to);
   }
+  updateBoardMoveQuality();
 
   const description = state.selectedMove
     ? `${gameTitle(game)}. ${labels().movePosition(
@@ -1168,6 +1285,7 @@ function selectGame(index, moveId = null) {
   renderNotation();
   updateMoveControls();
   updateBoardPosition();
+  classifyGameMoves(game);
   scheduleSave();
 }
 
@@ -1228,6 +1346,8 @@ async function handlePgnFile(file) {
 }
 
 function resetPgn() {
+  moveAnalysisToken += 1;
+  moveAnalysisController?.controller.stop();
   state.engineStatus = "off";
   state.engineLines = [];
   state.engineMeta = { depth: 0, targetDepth: 16 };
@@ -1833,6 +1953,7 @@ function addEventListeners() {
       !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     );
     renderEngineAnalysis();
+    updateBoardMoveQuality();
     scheduleSave();
   });
 
@@ -1898,6 +2019,7 @@ function addEventListeners() {
   window.addEventListener("pagehide", () => {
     ocrController?.clear();
     engineController?.destroy();
+    moveAnalysisController?.controller.destroy();
     state.pdfRenderTask?.cancel();
     state.pdfLoadingTask?.destroy();
   });
@@ -1915,6 +2037,15 @@ async function init() {
     onState: setEngineState,
     onAnalysis: receiveEngineAnalysis,
   });
+  const moveAnalysisCallbacks = { onState: () => {}, onAnalysis: () => {} };
+  moveAnalysisController = {
+    callbacks: moveAnalysisCallbacks,
+    controller: createEngineController({
+      workerUrl: ENGINE_WORKER_PATH,
+      onState: (...args) => moveAnalysisController.callbacks.onState(...args),
+      onAnalysis: (...args) => moveAnalysisController.callbacks.onAnalysis(...args),
+    }),
+  };
   ocrController = createOcrController({
     getPdfDocument: () => state.pdfDocument,
     getPageNumber: () => state.pdfSettings.pageNumber,
