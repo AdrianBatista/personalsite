@@ -50,6 +50,8 @@ export default {
           last: "Final position",
           flip: "Flip board",
           moves: "Moves and annotations",
+          editHint:
+            "Move a piece to add a legal move. From an earlier position, the move becomes a variation.",
           initial: "Start",
           position: "Current position",
         },
@@ -132,7 +134,7 @@ export default {
             title: "Current limitations",
             items: {
               0: "Diagram recognition targets axis-aligned 2D boards; low-confidence reads are rejected instead of creating an unreliable game.",
-              1: "No engine analysis or PGN editing.",
+              1: "No engine evaluation or direct editing of PGN headers and comments.",
               2: "A generated position defaults to White to move because a diagram alone does not encode the active color or move history.",
               3: "Browser storage may be cleared or evicted by the browser.",
             },
@@ -192,6 +194,8 @@ export default {
           last: "Posição final",
           flip: "Inverter tabuleiro",
           moves: "Lances e anotações",
+          editHint:
+            "Mova uma peça para adicionar um lance válido. Em uma posição anterior, o lance se torna uma variante.",
           initial: "Início",
           position: "Posição atual",
         },
@@ -274,7 +278,7 @@ export default {
             title: "Limitações atuais",
             items: {
               0: "O reconhecimento prioriza tabuleiros 2D alinhados; leituras com baixa confiança são rejeitadas em vez de criar uma partida imprecisa.",
-              1: "Sem análise por engine ou edição de PGN.",
+              1: "Sem avaliação por engine ou edição direta de cabeçalhos e comentários do PGN.",
               2: "Uma posição gerada usa Brancas como lado a jogar, pois o diagrama sozinho não informa o jogador ativo nem o histórico de lances.",
               3: "O armazenamento pode ser removido pelo navegador.",
             },

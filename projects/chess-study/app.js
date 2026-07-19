@@ -8,12 +8,17 @@ import {
   Chessboard,
   COLOR,
   FEN,
+  INPUT_EVENT_TYPE,
 } from "./vendor/cm-chessboard/src/Chessboard.js";
 import {
   MARKER_TYPE,
   Markers,
 } from "./vendor/cm-chessboard/src/extensions/markers/Markers.js";
 import { Accessibility } from "./vendor/cm-chessboard/src/extensions/accessibility/Accessibility.js";
+import {
+  PROMOTION_DIALOG_RESULT_TYPE,
+  PromotionDialog,
+} from "./vendor/cm-chessboard/src/extensions/promotion-dialog/PromotionDialog.js";
 import { getLanguage } from "/js/i18n.js";
 import {
   clearStoredSession,
@@ -21,6 +26,12 @@ import {
   saveStoredSession,
 } from "./storage.js";
 import { splitPgnRecords } from "./pgn-records.js";
+import {
+  addMoveToGame,
+  isPromotionMove,
+  replacePgnRecord,
+  validateMoveFromFen,
+} from "./pgn-editor.js";
 import { createOcrController } from "./ocr/ocr-controller.js";
 import { buildPositionIndex } from "./ocr/position-index.js";
 import {
@@ -103,6 +114,10 @@ const TEXT = {
     ocrStart: "Starting position",
     ocrDifferences: (count) =>
       `${count} ${count === 1 ? "square difference" : "square differences"}`,
+    illegalMove: "That move is not legal in this position.",
+    moveAdded: (move) => `${move} added to the PGN.`,
+    variationAdded: (move) => `${move} added as a PGN variation.`,
+    existingMove: (move) => `${move} is already in the PGN.`,
   },
   pt: {
     unknown: "Desconhecido",
@@ -161,6 +176,10 @@ const TEXT = {
     ocrStart: "Posição inicial",
     ocrDifferences: (count) =>
       `${count} ${count === 1 ? "diferença de casa" : "diferenças de casas"}`,
+    illegalMove: "Esse lance não é válido nesta posição.",
+    moveAdded: (move) => `${move} foi adicionado ao PGN.`,
+    variationAdded: (move) => `${move} foi adicionado como variante no PGN.`,
+    existingMove: (move) => `${move} já existe no PGN.`,
   },
 };
 
@@ -197,6 +216,9 @@ const state = {
   pdfSettings: { ...DEFAULT_PDF_SETTINGS },
   restoring: false,
   storageWarningShown: false,
+  pendingBoardMove: null,
+  pendingBoardMoveTimer: null,
+  promotionPending: false,
 };
 
 let elements;
@@ -553,13 +575,15 @@ function createBoard() {
           boardAsTable: true,
           movePieceForm: false,
           piecesAsList: false,
-          keyboardMoveInput: false,
+          keyboardMoveInput: true,
           visuallyHidden: true,
         },
       },
       { class: Markers, props: { autoMarkers: null } },
+      { class: PromotionDialog, props: { language: "en" } },
     ],
   });
+  state.board.enableMoveInput(handleBoardMoveInput);
 }
 
 function indexMoveTree(moves, prefix, moveById) {
@@ -592,6 +616,7 @@ function parsePgnText(text) {
       const headers = { ...pgn.header.tags };
       const game = {
         id: `game-${index}`,
+        recordIndex: index,
         rawPgn,
         pgn,
         headers,
@@ -620,6 +645,152 @@ function parsePgnText(text) {
 
   if (!games.length) throw new Error(labels().noValidGames);
   return { games, invalidCount };
+}
+
+function currentBoardMoveContext() {
+  const game = state.games[state.selectedGameIndex];
+  if (!game) return null;
+  return {
+    game,
+    gameIndex: state.selectedGameIndex,
+    previous: state.selectedMove,
+    fen: state.selectedMove?.fen || game.startFen,
+  };
+}
+
+function boardMoveContextIsCurrent(context) {
+  return Boolean(
+    context &&
+      state.games[context.gameIndex] === context.game &&
+      state.selectedGameIndex === context.gameIndex &&
+      state.selectedMove === context.previous,
+  );
+}
+
+function clearPendingBoardMove() {
+  window.clearTimeout(state.pendingBoardMoveTimer);
+  state.pendingBoardMoveTimer = null;
+  state.pendingBoardMove = null;
+}
+
+function reindexEditedGame(game) {
+  game.moves = game.pgn.history.moves;
+  game.moveById = new Map();
+  indexMoveTree(game.moves, `g${game.recordIndex}-m`, game.moveById);
+}
+
+function commitBoardMove(context, notation) {
+  if (!boardMoveContextIsCurrent(context)) return;
+
+  try {
+    const result = addMoveToGame(context.game, notation, context.previous);
+    if (result.changed) {
+      const renderedPgn = context.game.pgn.render();
+      context.game.rawPgn = renderedPgn;
+      state.pgnText = replacePgnRecord(
+        state.pgnText,
+        context.game.recordIndex,
+        renderedPgn,
+      );
+      reindexEditedGame(context.game);
+      state.positionIndex = buildPositionIndex(state.games);
+    }
+
+    state.selectedMove = result.move;
+    renderNotation();
+    updateMoveControls();
+    updateBoardPosition();
+    scheduleSave();
+
+    const message = result.changed
+      ? result.isVariation
+        ? labels().variationAdded(result.move.san)
+        : labels().moveAdded(result.move.san)
+      : labels().existingMove(result.move.san);
+    showStatus(message);
+  } catch (error) {
+    console.warn("Board move could not be added to the PGN.", error);
+    updateBoardPosition();
+    showStatus(labels().illegalMove, true);
+  }
+}
+
+function queueBoardMove(context, notation) {
+  clearPendingBoardMove();
+  const pending = { context, notation };
+  state.pendingBoardMove = pending;
+  // Mouse input emits a finished event. Keyboard input does not, so this
+  // timeout commits after its board animation as an accessible fallback.
+  state.pendingBoardMoveTimer = window.setTimeout(() => {
+    if (state.pendingBoardMove !== pending) return;
+    clearPendingBoardMove();
+    commitBoardMove(context, notation);
+  }, 220);
+}
+
+function handleBoardMoveInput(event) {
+  const context = currentBoardMoveContext();
+
+  if (event.type === INPUT_EVENT_TYPE.moveInputStarted) {
+    if (!context || state.promotionPending) return false;
+    const activeColor = context.fen.split(/\s+/)[1];
+    return event.piece?.[0] === activeColor;
+  }
+
+  if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {
+    if (!context) return false;
+    const promotion = isPromotionMove(event.piece, event.squareTo);
+    const notation = {
+      from: event.squareFrom,
+      to: event.squareTo,
+      ...(promotion ? { promotion: "q" } : {}),
+    };
+    const legalMove = validateMoveFromFen(
+      context.fen,
+      notation,
+      context.game.pgn.history.props.chess960,
+    );
+    if (!legalMove) return false;
+
+    if (promotion) {
+      state.promotionPending = true;
+      state.board.showPromotionDialog(
+        event.squareTo,
+        event.piece[0] === "b" ? COLOR.black : COLOR.white,
+        (result) => {
+          state.promotionPending = false;
+          if (
+            result.type === PROMOTION_DIALOG_RESULT_TYPE.pieceSelected &&
+            boardMoveContextIsCurrent(context)
+          ) {
+            commitBoardMove(context, {
+              from: event.squareFrom,
+              to: event.squareTo,
+              promotion: result.piece[1],
+            });
+          } else {
+            updateBoardPosition();
+          }
+        },
+      );
+      return false;
+    }
+
+    queueBoardMove(context, notation);
+    return true;
+  }
+
+  if (event.type === INPUT_EVENT_TYPE.moveInputFinished) {
+    if (state.promotionPending) return;
+    const pending = state.pendingBoardMove;
+    clearPendingBoardMove();
+    if (event.legalMove && pending) {
+      commitBoardMove(pending.context, pending.notation);
+    } else if (!event.legalMove) {
+      updateBoardPosition();
+      showStatus(labels().illegalMove, true);
+    }
+  }
 }
 
 function renderGameList() {
@@ -809,6 +980,7 @@ async function updateBoardPosition() {
 }
 
 function selectMove(moveId, options = {}) {
+  clearPendingBoardMove();
   const game = state.games[state.selectedGameIndex];
   if (!game) return;
   state.selectedMove =
@@ -825,6 +997,7 @@ function selectMove(moveId, options = {}) {
 }
 
 function selectGame(index, moveId = null) {
+  clearPendingBoardMove();
   const game = state.games[index];
   if (!game) return;
   state.selectedGameIndex = index;

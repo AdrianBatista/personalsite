@@ -473,6 +473,15 @@ button {
   border: 0;
 }
 
+.board-edit-hint {
+  width: min(100%, var(--study-board-max));
+  margin: var(--space-xs) auto 0;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
 .move-controls {
   display: grid;
   width: min(100%, var(--study-board-max));

@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Added a bilingual Chess Study Environment that loads local PDFs and annotated multi-game PGNs, provides game/variation navigation on a responsive chessboard, renders two-column books one calibrated column at a time, and restores the active study through IndexedDB.
 - Added local chess-diagram recognition to Chess Study: the active PDF page is scanned for printed boards, detected diagrams become accessible overlays, and selected diagrams are matched against indexed PGN positions with automatic high-confidence navigation and an ambiguity fallback.
 - Added full client-side chess-piece recognition to Chess Study using a vendored ONNX model. Reliable PDF positions without a PGN match are appended as setup-position games, and a new local PGN is created when no PGN is loaded.
+- Added legal move editing to the Chess Study board, including automatic PGN updates, alternative-line creation, promotion selection, and keyboard move input.
 
 ### Fixed
 
