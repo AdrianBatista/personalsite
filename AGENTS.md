@@ -58,16 +58,10 @@ articles/
   index.html           # Bilingual index of project articles
 projects/
   index.html           # Project index
-  net-salary-calculator/
-    index.html         # Calculator interface
-    article.html       # Calculator documentation
-  background-remover/
-    index.html         # Background remover interface
-    article.html       # Background remover documentation
-  chess-study/
-    index.html         # Local PDF + annotated PGN chess study workspace
-    article.html       # Architecture and implementation documentation
-    vendor/            # Pinned browser modules and license/provenance notes
+  net-salary-calculator/ # Git submodule: calculator interface and documentation
+  background-remover/    # Git submodule: background remover and documentation
+  chess-study/           # Private Git submodule: PDF + annotated PGN chess workspace
+  uuid-generator/        # Git submodule: UUID generator and documentation
 css/
   tokens.css            # Design tokens (dark theme palette, spacing, fluid type)
   main.css              # Layout, components, responsive nav, motion guards

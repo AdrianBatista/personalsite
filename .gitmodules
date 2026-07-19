@@ -1,0 +1,12 @@
+[submodule "background-remover"]
+	path = projects/background-remover
+	url = https://github.com/AdrianBatista/background-remover.git
+[submodule "chess-study"]
+	path = projects/chess-study
+	url = https://github.com/AdrianBatista/chess-study.git
+[submodule "net-salary-calculator"]
+	path = projects/net-salary-calculator
+	url = https://github.com/AdrianBatista/net-salary-calculator.git
+[submodule "uuid-generator"]
+	path = projects/uuid-generator
+	url = https://github.com/AdrianBatista/uuid-generator.git

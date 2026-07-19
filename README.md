@@ -51,6 +51,9 @@ All libraries loaded via CDN (no npm dependencies). See [.github/skills/premium-
 ## Running Locally
 
 ```bash
+# Clone including the project submodules
+git clone --recurse-submodules https://github.com/AdrianBatista/personalsite.git
+
 # Start a local static server
 npx serve .
 
@@ -59,6 +62,21 @@ npx serve .
 ```
 
 No build step. All changes are visible immediately after refresh.
+
+## Project Submodules
+
+The standalone applications in `projects/` are Git submodules. Initialize them after a regular clone with:
+
+```bash
+git submodule update --init --recursive
+```
+
+`chess-study` is private, so initializing all submodules requires GitHub credentials with access to that repository.
+
+- [background-remover](https://github.com/AdrianBatista/background-remover) — public
+- [chess-study](https://github.com/AdrianBatista/chess-study) — private
+- [net-salary-calculator](https://github.com/AdrianBatista/net-salary-calculator) — public
+- [uuid-generator](https://github.com/AdrianBatista/uuid-generator) — public
 
 ## License
 
