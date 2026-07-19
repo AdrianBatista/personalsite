@@ -45,8 +45,37 @@ directly and does not fetch executable code from a runtime CDN.
 - Included: ES modules, board stylesheet, standard piece sprite, marker
   stylesheet, and marker sprite.
 
+## Fenshot
+
+- Package: `@scoriiu/fenshot`
+- Version: `0.1.4`
+- Source: <https://github.com/scoriiu/fenshot>
+- Registry package: <https://www.npmjs.com/package/@scoriiu/fenshot>
+- License: MIT (`fenshot/LICENSE`)
+- Included: browser ES modules and the `chess-tiles-v2.onnx` 13-class chess
+  tile model.
+- Local change: extensionless relative imports and the bare
+  `onnxruntime-web/wasm` import point to the sibling vendored browser modules.
+  `recognizeAtCorners` exposes classification at board coordinates already
+  detected by the PDF pipeline, avoiding a second detection pass.
+- Model SHA-256:
+  `883F6A8E639E6D6B6399B3FDA0508AD772E3C6F9CEFA2E678A13F27B9FA6248D`.
+
+## ONNX Runtime Web
+
+- Package: `onnxruntime-web`
+- Version: `1.27.0`
+- Source: <https://github.com/microsoft/onnxruntime>
+- Registry package: <https://www.npmjs.com/package/onnxruntime-web>
+- License: MIT (`onnxruntime-web/LICENSE`)
+- Included: the pure-WASM ES module loader and SIMD-threaded WASM runtime used
+  by Fenshot. WebGPU/WebGL builds, source maps, and Node.js files are omitted.
+- WASM SHA-256:
+  `D1AB1B94B16A65B29D710D0B587B29E7BED336827577623913479B8AFE8113E6`.
+
 ## Updating
 
 Review release notes and licenses first. Download exact package archives with
 `npm pack`, replace only the listed files, reapply the documented `cm-pgn`
-relative-import change, and test representative PDF and annotated PGN files.
+and Fenshot relative-import changes, verify the recorded model/runtime hashes,
+and test representative PDF and annotated PGN files.

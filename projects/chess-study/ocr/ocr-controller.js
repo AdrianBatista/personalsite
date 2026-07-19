@@ -1,6 +1,5 @@
-import { recognizeBoardColors } from "./board-recognizer.js";
 import { detectChessDiagrams } from "./diagram-detector.js";
-import { resolvePositionMatch } from "./position-matcher.js";
+import { createFullPositionRecognizer } from "./full-position-recognizer.js";
 
 const MAX_ANALYSIS_EDGE = 1600;
 
@@ -11,6 +10,10 @@ function nextTask() {
 export function createOcrController(options) {
   let revision = 0;
   let pageAnalysis = null;
+  const positionRecognizer = createFullPositionRecognizer({
+    modelUrl: options.modelUrl,
+    wasmPaths: options.wasmPaths,
+  });
 
   const clear = () => {
     revision += 1;
@@ -21,10 +24,9 @@ export function createOcrController(options) {
 
   const analyzeCurrentPage = async (force = false) => {
     const pdfDocument = options.getPdfDocument();
-    const positionIndex = options.getPositionIndex();
-    if (!pdfDocument || !positionIndex?.length) {
+    if (!pdfDocument) {
       clear();
-      options.onStatus(!pdfDocument ? "needs-pdf" : "needs-pgn");
+      options.onStatus("needs-pdf");
       return;
     }
 
@@ -119,7 +121,7 @@ export function createOcrController(options) {
     const detection = pageAnalysis?.detections.find(
       (candidate) => candidate.id === detectionId,
     );
-    if (!detection || !positionIndex?.length) return;
+    if (!detection) return;
 
     const currentRevision = revision;
     detection.status = "analyzing";
@@ -128,18 +130,39 @@ export function createOcrController(options) {
 
     try {
       await nextTask();
-      const observations = recognizeBoardColors(
+      const recognized = await positionRecognizer.recognize(
         pageAnalysis.imageData,
         detection.pixelBox,
       );
-      const result = resolvePositionMatch(observations, positionIndex);
       if (currentRevision !== revision) return;
+      if (!recognized || !recognized.reliable) {
+        throw new Error("The full chess position could not be read reliably.");
+      }
 
-      detection.status =
-        result.confidence === "high" ? "matched" : "ambiguous";
+      const correspondingByGame = new Map();
+      for (const candidate of positionIndex || []) {
+        if (
+          candidate.placementKey === recognized.placement &&
+          !correspondingByGame.has(candidate.gameIndex)
+        ) {
+          correspondingByGame.set(candidate.gameIndex, {
+            ...candidate,
+            orientation: recognized.orientation,
+            mismatches: 0,
+          });
+        }
+      }
+      const result = {
+        ...recognized,
+        confidence: "high",
+        correspondingCandidates: [...correspondingByGame.values()],
+      };
+
       detection.result = result;
+      const outcome = await options.onResult(result, detection);
+      if (currentRevision !== revision) return;
+      detection.status = outcome?.status || "matched";
       options.onDetections(pageAnalysis.detections);
-      options.onResult(result, detection, observations);
     } catch (error) {
       if (currentRevision !== revision) return;
       console.error("Chess diagram recognition failed.", error);
@@ -153,6 +176,7 @@ export function createOcrController(options) {
     analyzeCurrentPage,
     recognizeDetection,
     clear,
+    warmUp: positionRecognizer.warmUp,
     refreshOverlays() {
       options.onDetections(pageAnalysis?.detections || []);
     },

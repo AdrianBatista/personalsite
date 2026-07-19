@@ -29,14 +29,14 @@ export default {
           searchPlaceholder: "Player, event, ECO…",
           emptyTitle: "No PGN loaded",
           emptyText:
-            "Load a PGN file to browse its games, annotations, and variations.",
+            "Load a PGN, or recognize a PDF diagram to create a position game.",
           noResults: "No games match this filter.",
         },
         board: {
           title: "Game board",
-          emptyTitle: "Choose a PGN",
+          emptyTitle: "Choose a PGN or diagram",
           emptyText:
-            "The selected game's position, moves, comments, and variations will appear here.",
+            "Load a PGN or select a recognized PDF diagram to open its position here.",
           dropPgn: "Drop a PGN file to load the games",
           white: "White",
           black: "Black",
@@ -112,7 +112,7 @@ export default {
             p1:
               "The application remains a static set of HTML, CSS, and ES modules. PDF.js renders local PDF bytes, cm-pgn parses annotated multi-game PGNs, and cm-chessboard displays each parsed FEN position.",
             p2:
-              "A local recognition pipeline detects printed diagrams on the active PDF page, classifies each square as empty, White, or Black, and ranks positions from the loaded PGN before navigating to a high-confidence match.",
+              "A local ONNX recognition pipeline detects printed diagrams on the active PDF page, classifies all 13 square states, and converts reliable reads to FEN. Exact positions open their PGN game; unmatched positions become setup-position games at the end of the study PGN.",
           },
           pdf: {
             title: "Rendering one PDF column",
@@ -131,9 +131,9 @@ export default {
           limitations: {
             title: "Current limitations",
             items: {
-              0: "Diagram recognition currently targets axis-aligned monochrome printed boards; unfamiliar styles may require candidate confirmation.",
+              0: "Diagram recognition targets axis-aligned 2D boards; low-confidence reads are rejected instead of creating an unreliable game.",
               1: "No engine analysis or PGN editing.",
-              2: "Automatic matching requires the exact diagram position to exist in the loaded PGN.",
+              2: "A generated position defaults to White to move because a diagram alone does not encode the active color or move history.",
               3: "Browser storage may be cleared or evicted by the browser.",
             },
           },
@@ -171,14 +171,14 @@ export default {
           searchPlaceholder: "Jogador, evento, ECO…",
           emptyTitle: "Nenhum PGN carregado",
           emptyText:
-            "Carregue um arquivo PGN para navegar pelas partidas, anotações e variantes.",
+            "Carregue um PGN ou reconheça um diagrama do PDF para criar uma partida de posição.",
           noResults: "Nenhuma partida corresponde ao filtro.",
         },
         board: {
           title: "Tabuleiro da partida",
-          emptyTitle: "Escolha um PGN",
+          emptyTitle: "Escolha um PGN ou diagrama",
           emptyText:
-            "A posição, os lances, comentários e variantes da partida selecionada aparecerão aqui.",
+            "Carregue um PGN ou selecione um diagrama reconhecido do PDF para abrir a posição aqui.",
           dropPgn: "Solte um arquivo PGN para carregar as partidas",
           white: "Brancas",
           black: "Pretas",
@@ -254,7 +254,7 @@ export default {
             p1:
               "A aplicação permanece um conjunto estático de HTML, CSS e módulos ES. PDF.js renderiza os bytes locais do PDF, cm-pgn interpreta PGNs anotados com várias partidas e cm-chessboard exibe cada posição FEN.",
             p2:
-              "Um pipeline local detecta diagramas impressos na página atual do PDF, classifica cada casa como vazia, branca ou preta e ordena as posições do PGN carregado antes de navegar para uma correspondência de alta confiança.",
+              "Um pipeline ONNX local detecta diagramas impressos na página atual do PDF, classifica os 13 estados possíveis de cada casa e converte leituras confiáveis em FEN. Posições exatas abrem sua partida no PGN; posições sem correspondência viram partidas com posição inicial ao final do PGN do estudo.",
           },
           pdf: {
             title: "Renderizando uma coluna do PDF",
@@ -273,9 +273,9 @@ export default {
           limitations: {
             title: "Limitações atuais",
             items: {
-              0: "O reconhecimento atualmente prioriza diagramas monocromáticos e alinhados; estilos desconhecidos podem exigir confirmação.",
+              0: "O reconhecimento prioriza tabuleiros 2D alinhados; leituras com baixa confiança são rejeitadas em vez de criar uma partida imprecisa.",
               1: "Sem análise por engine ou edição de PGN.",
-              2: "A correspondência automática exige que a posição exata do diagrama exista no PGN carregado.",
+              2: "Uma posição gerada usa Brancas como lado a jogar, pois o diagrama sozinho não informa o jogador ativo nem o histórico de lances.",
               3: "O armazenamento pode ser removido pelo navegador.",
             },
           },

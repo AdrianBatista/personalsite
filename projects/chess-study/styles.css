@@ -818,12 +818,14 @@ button {
   background: #e5b567;
 }
 
-.pdf-diagram-target.is-matched {
+.pdf-diagram-target.is-matched,
+.pdf-diagram-target.is-created {
   border-color: var(--accent-green);
   background: rgba(95, 216, 143, 0.12);
 }
 
-.pdf-diagram-target.is-matched::after {
+.pdf-diagram-target.is-matched::after,
+.pdf-diagram-target.is-created::after {
   background: var(--accent-green);
 }
 

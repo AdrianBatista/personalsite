@@ -23,10 +23,16 @@ import {
 import { splitPgnRecords } from "./pgn-records.js";
 import { createOcrController } from "./ocr/ocr-controller.js";
 import { buildPositionIndex } from "./ocr/position-index.js";
+import {
+  appendPgnRecord,
+  buildOcrPositionPgn,
+} from "./ocr/generated-game.js";
 
 const PROJECT_PATH = "/projects/chess-study/";
 const PDF_ASSET_PATH = `${PROJECT_PATH}vendor/pdfjs/`;
 const BOARD_ASSET_PATH = `${PROJECT_PATH}vendor/cm-chessboard/assets/`;
+const OCR_MODEL_PATH = `${PROJECT_PATH}vendor/fenshot/model/chess-tiles-v2.onnx`;
+const OCR_WASM_PATH = `${PROJECT_PATH}vendor/onnxruntime-web/`;
 const MAX_PDF_SIZE = 180 * 1024 * 1024;
 const MAX_PGN_SIZE = 30 * 1024 * 1024;
 const DEFAULT_PDF_SETTINGS = Object.freeze({
@@ -82,14 +88,15 @@ const TEXT = {
     result: "Result",
     ocrScanning: "Scanning the current PDF page for chess diagrams…",
     ocrReady: (count) =>
-      `${count} chess ${count === 1 ? "diagram" : "diagrams"} detected. Select one to match it with the PGN.`,
+      `${count} chess ${count === 1 ? "diagram" : "diagrams"} detected. Select one to recognize its position.`,
     ocrNone: "No chess diagram was detected on this page.",
-    ocrNeedsPgn: "Load a PGN to match diagrams from the book.",
-    ocrRecognizing: "Reading the selected diagram and comparing PGN positions…",
+    ocrRecognizing: "Reading every piece and comparing the position with the PGN…",
     ocrMatched: (game, move) => `Matched ${game}${move ? ` · ${move}` : ""}.`,
     ocrAmbiguous: "Choose the matching PGN position.",
     ocrMultipleMatches: (count) =>
       `This position appears in ${count} PGN games. Choose which game to open.`,
+    ocrCreated: (game) =>
+      `No matching PGN position was found. Created and opened ${game}.`,
     ocrError: "The current page could not be analyzed.",
     ocrRecognitionError: "The selected diagram could not be recognized.",
     ocrDiagramLabel: (number) => `Analyze detected chess diagram ${number}`,
@@ -138,15 +145,16 @@ const TEXT = {
     result: "Resultado",
     ocrScanning: "Procurando diagramas de xadrez na página atual do PDF…",
     ocrReady: (count) =>
-      `${count} ${count === 1 ? "diagrama detectado" : "diagramas detectados"}. Selecione um para comparar com o PGN.`,
+      `${count} ${count === 1 ? "diagrama detectado" : "diagramas detectados"}. Selecione um para reconhecer a posição.`,
     ocrNone: "Nenhum diagrama de xadrez foi detectado nesta página.",
-    ocrNeedsPgn: "Carregue um PGN para relacionar os diagramas do livro.",
-    ocrRecognizing: "Lendo o diagrama selecionado e comparando posições do PGN…",
+    ocrRecognizing: "Lendo todas as peças e comparando a posição com o PGN…",
     ocrMatched: (game, move) =>
       `Correspondência encontrada: ${game}${move ? ` · ${move}` : ""}.`,
     ocrAmbiguous: "Escolha a posição correspondente no PGN.",
     ocrMultipleMatches: (count) =>
       `Esta posição aparece em ${count} partidas do PGN. Escolha qual partida abrir.`,
+    ocrCreated: (game) =>
+      `Nenhuma posição correspondente foi encontrada. ${game} foi criada e aberta.`,
     ocrError: "Não foi possível analisar a página atual.",
     ocrRecognitionError: "Não foi possível reconhecer o diagrama selecionado.",
     ocrDiagramLabel: (number) => `Analisar diagrama de xadrez ${number}`,
@@ -293,12 +301,10 @@ function setFileActionLabels() {
 }
 
 function setOcrStatus(status, details = {}) {
-  elements.ocrScan.disabled = !(
-    state.pdfDocument && state.positionIndex.length
-  );
+  elements.ocrScan.disabled = !state.pdfDocument;
   elements.ocrStatus.classList.toggle(
     "is-ready",
-    status === "ready" || status === "matched",
+    status === "ready" || status === "matched" || status === "created",
   );
   elements.ocrStatus.classList.toggle(
     "is-error",
@@ -308,7 +314,6 @@ function setOcrStatus(status, details = {}) {
   const messages = {
     idle: "",
     "needs-pdf": "",
-    "needs-pgn": labels().ocrNeedsPgn,
     scanning: labels().ocrScanning,
     ready: labels().ocrReady(details.count || 0),
     none: labels().ocrNone,
@@ -352,6 +357,7 @@ function renderOcrDetections(detections) {
       detection.status === "analyzing",
     );
     button.classList.toggle("is-matched", detection.status === "matched");
+    button.classList.toggle("is-created", detection.status === "created");
     button.classList.toggle(
       "is-ambiguous",
       detection.status === "ambiguous",
@@ -413,10 +419,40 @@ async function applyOcrCandidate(candidate) {
   showStatus(labels().ocrMatched(gameTitle(game), moveText));
 }
 
+async function createGameFromOcr(result, detection) {
+  const record = buildOcrPositionPgn(result.fen, {
+    pageNumber: state.pdfSettings.pageNumber,
+    diagramNumber: detection.index + 1,
+  });
+  const gameIndex = state.games.length;
+  const nextPgn = appendPgnRecord(state.pgnText, record);
+  await loadPgnContent(nextPgn, state.pgnFileName || "ocr-positions.pgn", {
+    selectedGameIndex: gameIndex,
+    skipOcrAnalysis: true,
+  });
+
+  if (result.orientation !== state.boardOrientation) {
+    state.boardOrientation = result.orientation;
+    await state.board.setOrientation(
+      result.orientation === "black" ? COLOR.black : COLOR.white,
+      false,
+    );
+  }
+
+  const game = state.games[gameIndex];
+  const message = labels().ocrCreated(gameTitle(game));
+  elements.ocrStatus.classList.add("is-ready");
+  elements.ocrStatus.classList.remove("is-error");
+  elements.ocrStatus.textContent = message;
+  updateMobilePanel("board");
+  showStatus(message, false, 6500);
+  scheduleSave();
+}
+
 function showOcrCandidates(result) {
   elements.ocrCandidateList.textContent = "";
   const exactMatches = result.correspondingCandidates || [];
-  const candidates = exactMatches.length > 1 ? exactMatches : result.candidates;
+  const candidates = exactMatches;
   elements.ocrDialogIntro.textContent =
     exactMatches.length > 1
       ? labels().ocrMultipleMatches(exactMatches.length)
@@ -447,13 +483,18 @@ function showOcrCandidates(result) {
   }
 }
 
-function handleOcrResult(result) {
+async function handleOcrResult(result, detection) {
   const exactMatches = result.correspondingCandidates || [];
-  if (result.confidence === "high" && exactMatches.length === 1) {
-    applyOcrCandidate(exactMatches[0]);
-  } else {
-    showOcrCandidates(result);
+  if (exactMatches.length === 1) {
+    await applyOcrCandidate(exactMatches[0]);
+    return { status: "matched" };
   }
+  if (exactMatches.length > 1) {
+    showOcrCandidates(result);
+    return { status: "ambiguous" };
+  }
+  await createGameFromOcr(result, detection);
+  return { status: "created" };
 }
 
 function formatHeader(value) {
@@ -824,7 +865,7 @@ async function loadPgnContent(text, fileName, restore = {}) {
   );
   selectGame(selectedIndex, restore.selectedMoveId || null);
   showStatus(labels().pgnReady(games.length, invalidCount));
-  scheduleOcrAnalysis();
+  if (!restore.skipOcrAnalysis) scheduleOcrAnalysis();
 }
 
 async function handlePgnFile(file) {
@@ -873,7 +914,7 @@ function resetPgn() {
   state.board?.setPosition(FEN.start, false);
   setFileActionLabels();
   ocrController?.clear();
-  setOcrStatus(state.pdfDocument ? "needs-pgn" : "idle");
+  setOcrStatus("idle");
 }
 
 function pdfColumnName(column) {
@@ -1140,7 +1181,7 @@ async function loadPdfBlob(blob, fileName, restoredSettings = {}) {
   updateCalibrationUi();
   setFileActionLabels();
   await fitPdfRegion(false);
-  setOcrStatus(state.positionIndex.length ? "scanning" : "needs-pgn");
+  setOcrStatus("scanning");
   showStatus(labels().pdfReady(state.pdfDocument.numPages));
 }
 
@@ -1391,6 +1432,10 @@ function addEventListeners() {
   );
   elements.clearStudy.addEventListener("click", clearStudy);
   elements.ocrScan.addEventListener("click", () => scheduleOcrAnalysis(true));
+  elements.ocrScan.addEventListener("pointerenter", () =>
+    ocrController?.warmUp(),
+  );
+  elements.ocrScan.addEventListener("focus", () => ocrController?.warmUp());
   elements.ocrDialogClose.addEventListener("click", () =>
     elements.ocrCandidateDialog.close(),
   );
@@ -1521,6 +1566,8 @@ async function init() {
     getPdfDocument: () => state.pdfDocument,
     getPageNumber: () => state.pdfSettings.pageNumber,
     getPositionIndex: () => state.positionIndex,
+    modelUrl: OCR_MODEL_PATH,
+    wasmPaths: OCR_WASM_PATH,
     onDetections: renderOcrDetections,
     onStatus: setOcrStatus,
     onResult: handleOcrResult,
