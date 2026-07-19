@@ -73,9 +73,26 @@ directly and does not fetch executable code from a runtime CDN.
 - WASM SHA-256:
   `D1AB1B94B16A65B29D710D0B587B29E7BED336827577623913479B8AFE8113E6`.
 
+## Stockfish.js
+
+- Package: `stockfish.js`
+- Version: `18.0.0`
+- Upstream engine: Stockfish 18
+- Source: <https://github.com/nmrugg/stockfish.js/tree/v18.0.0>
+- Release: <https://github.com/nmrugg/stockfish.js/releases/tag/v18.0.0>
+- License: GPL-3.0 (`stockfish/LICENSE`)
+- Included: the lite single-threaded JavaScript loader and WebAssembly engine,
+  plus the upstream authors and license files. This build avoids shared-memory
+  and cross-origin-isolation requirements while remaining suitable for local
+  interactive analysis.
+- JavaScript SHA-256:
+  `2278005057F381491F1C9BB3E44C9F5920B3A00BEF9759E33CC6582769A1F1FE`.
+- WASM SHA-256:
+  `A8FBC05EC6920B56D7485826DCB02C5FFD2826BCBF751CF973046F237A9096F1`.
+
 ## Updating
 
-Review release notes and licenses first. Download exact package archives with
-`npm pack`, replace only the listed files, reapply the documented `cm-pgn`
+Review release notes and licenses first. Download exact package archives or
+release assets, replace only the listed files, reapply the documented `cm-pgn`
 and Fenshot relative-import changes, verify the recorded model/runtime hashes,
-and test representative PDF and annotated PGN files.
+and test representative PDF, annotated PGN, and engine positions.

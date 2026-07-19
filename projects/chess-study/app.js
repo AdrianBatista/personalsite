@@ -38,12 +38,18 @@ import {
   appendPgnRecord,
   buildOcrPositionPgn,
 } from "./ocr/generated-game.js";
+import {
+  createEngineController,
+  evaluationToWhiteShare,
+  formatEvaluation,
+} from "./engine-analysis.js";
 
 const PROJECT_PATH = "/projects/chess-study/";
 const PDF_ASSET_PATH = `${PROJECT_PATH}vendor/pdfjs/`;
 const BOARD_ASSET_PATH = `${PROJECT_PATH}vendor/cm-chessboard/assets/`;
 const OCR_MODEL_PATH = `${PROJECT_PATH}vendor/fenshot/model/chess-tiles-v2.onnx`;
 const OCR_WASM_PATH = `${PROJECT_PATH}vendor/onnxruntime-web/`;
+const ENGINE_WORKER_PATH = `${PROJECT_PATH}vendor/stockfish/stockfish-18-lite-single.js`;
 const MAX_PDF_SIZE = 180 * 1024 * 1024;
 const MAX_PGN_SIZE = 30 * 1024 * 1024;
 const DEFAULT_PDF_SETTINGS = Object.freeze({
@@ -118,6 +124,17 @@ const TEXT = {
     moveAdded: (move) => `${move} added to the PGN.`,
     variationAdded: (move) => `${move} added as a PGN variation.`,
     existingMove: (move) => `${move} is already in the PGN.`,
+    engineOff: "Engine off",
+    engineLoading: "Loading Stockfish…",
+    engineAnalyzing: (depth, target) =>
+      `Analyzing · depth ${depth || 0}/${target}`,
+    engineComplete: (depth) => `Analysis complete · depth ${depth}`,
+    engineError: "The local chess engine could not be started.",
+    engineEmpty: "Start the engine to calculate the best continuations.",
+    engineWaiting: "Calculating principal variations…",
+    engineEqual: "Equal position",
+    engineWhiteAdvantage: (score) => `White advantage ${score}`,
+    engineBlackAdvantage: (score) => `Black advantage ${score}`,
   },
   pt: {
     unknown: "Desconhecido",
@@ -180,6 +197,17 @@ const TEXT = {
     moveAdded: (move) => `${move} foi adicionado ao PGN.`,
     variationAdded: (move) => `${move} foi adicionado como variante no PGN.`,
     existingMove: (move) => `${move} já existe no PGN.`,
+    engineOff: "Engine desligada",
+    engineLoading: "Carregando Stockfish…",
+    engineAnalyzing: (depth, target) =>
+      `Analisando · profundidade ${depth || 0}/${target}`,
+    engineComplete: (depth) => `Análise concluída · profundidade ${depth}`,
+    engineError: "Não foi possível iniciar a engine local.",
+    engineEmpty: "Inicie a engine para calcular as melhores continuações.",
+    engineWaiting: "Calculando variantes principais…",
+    engineEqual: "Posição equilibrada",
+    engineWhiteAdvantage: (score) => `Vantagem das Brancas ${score}`,
+    engineBlackAdvantage: (score) => `Vantagem das Pretas ${score}`,
   },
 };
 
@@ -219,6 +247,9 @@ const state = {
   pendingBoardMove: null,
   pendingBoardMoveTimer: null,
   promotionPending: false,
+  engineStatus: "off",
+  engineLines: [],
+  engineMeta: { depth: 0, targetDepth: 16 },
 };
 
 let elements;
@@ -227,6 +258,7 @@ let saveTimer;
 let resizeTimer;
 let ocrTimer;
 let ocrController;
+let engineController;
 
 function labels() {
   return TEXT[getLanguage() === "pt" ? "pt" : "en"];
@@ -267,6 +299,14 @@ function queryElements() {
     moveStatus: document.getElementById("move-status"),
     notation: document.getElementById("notation"),
     positionDescription: document.getElementById("position-description"),
+    engineDepth: document.getElementById("engine-depth"),
+    engineStatus: document.getElementById("engine-status"),
+    engineEvaluation: document.getElementById("engine-evaluation"),
+    engineEmpty: document.getElementById("engine-empty"),
+    engineLines: document.getElementById("engine-lines"),
+    advantageMeter: document.getElementById("advantage-meter"),
+    advantageWhiteFill: document.getElementById("advantage-white-fill"),
+    advantageScore: document.getElementById("advantage-score"),
     bookEmpty: document.getElementById("book-empty"),
     bookContent: document.getElementById("book-content"),
     bookFileName: document.getElementById("book-file-name"),
@@ -311,6 +351,123 @@ function showStatus(message, isError = false, duration = 4200) {
   statusTimer = window.setTimeout(() => {
     elements.status.classList.remove("is-visible");
   }, duration);
+}
+
+function engineStatusText() {
+  if (state.engineStatus === "loading") return labels().engineLoading;
+  if (state.engineStatus === "analyzing") {
+    return labels().engineAnalyzing(
+      state.engineMeta.depth,
+      state.engineMeta.targetDepth,
+    );
+  }
+  if (state.engineStatus === "complete") {
+    return labels().engineComplete(state.engineMeta.depth);
+  }
+  if (state.engineStatus === "error") return labels().engineError;
+  return labels().engineOff;
+}
+
+function updateAdvantageMeter(evaluation) {
+  const share = evaluationToWhiteShare(evaluation);
+  const score = formatEvaluation(evaluation);
+  const value = evaluation
+    ? evaluation.type === "mate"
+      ? Math.sign(evaluation.value) * 10
+      : Math.max(-10, Math.min(10, evaluation.value / 100))
+    : 0;
+  const valueText = !evaluation
+    ? labels().engineEqual
+    : evaluation.value > 0
+      ? labels().engineWhiteAdvantage(score)
+      : evaluation.value < 0
+        ? labels().engineBlackAdvantage(score)
+        : labels().engineEqual;
+
+  elements.advantageWhiteFill.style.setProperty(
+    "--white-share",
+    String(share / 100),
+  );
+  elements.advantageMeter.classList.toggle(
+    "is-black-orientation",
+    state.boardOrientation === "black",
+  );
+  elements.advantageMeter.classList.toggle(
+    "is-white-leading",
+    Boolean(evaluation && evaluation.value > 0),
+  );
+  elements.advantageMeter.classList.toggle(
+    "is-black-leading",
+    Boolean(evaluation && evaluation.value < 0),
+  );
+  elements.advantageMeter.setAttribute("aria-valuenow", String(value));
+  elements.advantageMeter.setAttribute("aria-valuetext", valueText);
+  elements.advantageScore.textContent = evaluation ? score : "—";
+}
+
+function renderEngineAnalysis() {
+  elements.engineStatus.textContent = engineStatusText();
+  elements.engineLines.textContent = "";
+
+  const primaryLine = state.engineLines[0];
+  updateAdvantageMeter(primaryLine?.evaluation || null);
+  elements.engineEvaluation.textContent = primaryLine
+    ? formatEvaluation(primaryLine.evaluation)
+    : "—";
+  elements.engineEmpty.hidden = state.engineLines.length > 0;
+  elements.engineEmpty.textContent = ["loading", "analyzing"].includes(
+    state.engineStatus,
+  )
+    ? labels().engineWaiting
+    : labels().engineEmpty;
+
+  state.engineLines.forEach((line) => {
+    const item = document.createElement("li");
+    const score = document.createElement("span");
+    const variation = document.createElement("span");
+    item.className = "engine-line";
+    score.className = "engine-line-score";
+    score.textContent = formatEvaluation(line.evaluation);
+    variation.className = "engine-line-pv";
+    variation.textContent = line.san || line.pv.join(" ");
+    variation.title = variation.textContent;
+    item.append(score, variation);
+    elements.engineLines.append(item);
+  });
+}
+
+function setEngineState(status) {
+  state.engineStatus = status;
+  if (status === "error") {
+    showStatus(labels().engineError, true, 7000);
+  }
+  renderEngineAnalysis();
+}
+
+function receiveEngineAnalysis(lines, meta) {
+  state.engineLines = lines;
+  state.engineMeta = meta;
+  state.engineStatus = meta.status;
+  renderEngineAnalysis();
+}
+
+function analyzeCurrentPosition(fen = null, game = null) {
+  const selectedGame = game || state.games[state.selectedGameIndex];
+  if (!selectedGame) return;
+  const currentFen =
+    fen || state.selectedMove?.fen || selectedGame.startFen || FEN.start;
+  state.engineLines = [];
+  state.engineMeta = {
+    depth: 0,
+    targetDepth: Number(elements.engineDepth.value),
+  };
+  renderEngineAnalysis();
+  engineController.analyze({
+    fen: currentFen,
+    depth: state.engineMeta.targetDepth,
+    multiPv: 3,
+    chess960: Boolean(selectedGame.pgn.history.props.chess960),
+  });
 }
 
 function setFileActionLabels() {
@@ -944,6 +1101,7 @@ function updateMoveControls() {
   elements.moveLast.disabled =
     !hasGame || !lastMove || state.selectedMove === lastMove;
   elements.flipBoard.disabled = !hasGame;
+  elements.engineDepth.disabled = !hasGame;
 
   if (!state.selectedMove) {
     elements.moveStatus.textContent = labels().start;
@@ -963,6 +1121,7 @@ async function updateBoardPosition() {
     "(prefers-reduced-motion: reduce)",
   ).matches;
 
+  analyzeCurrentPosition(fen, game);
   await state.board.setPosition(fen, animate);
   state.board.removeMarkers();
   if (state.selectedMove?.from && state.selectedMove?.to) {
@@ -1069,6 +1228,10 @@ async function handlePgnFile(file) {
 }
 
 function resetPgn() {
+  state.engineStatus = "off";
+  state.engineLines = [];
+  state.engineMeta = { depth: 0, targetDepth: 16 };
+  engineController?.stop();
   state.games = [];
   state.positionIndex = [];
   state.selectedGameIndex = -1;
@@ -1088,6 +1251,7 @@ function resetPgn() {
   setFileActionLabels();
   ocrController?.clear();
   setOcrStatus("idle");
+  renderEngineAnalysis();
 }
 
 function pdfColumnName(column) {
@@ -1604,6 +1768,9 @@ function addEventListeners() {
     handlePgnFile(elements.pgnInput.files[0]),
   );
   elements.clearStudy.addEventListener("click", clearStudy);
+  elements.engineDepth.addEventListener("change", () => {
+    if (state.games[state.selectedGameIndex]) analyzeCurrentPosition();
+  });
   elements.ocrScan.addEventListener("click", () => scheduleOcrAnalysis(true));
   elements.ocrScan.addEventListener("pointerenter", () =>
     ocrController?.warmUp(),
@@ -1665,6 +1832,7 @@ function addEventListeners() {
       state.boardOrientation === "white" ? COLOR.white : COLOR.black,
       !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     );
+    renderEngineAnalysis();
     scheduleSave();
   });
 
@@ -1712,6 +1880,7 @@ function addEventListeners() {
     updateMoveControls();
     updatePdfControls();
     ocrController?.refreshOverlays();
+    renderEngineAnalysis();
   });
 
   document.addEventListener("dragover", (event) => {
@@ -1728,13 +1897,24 @@ function addEventListeners() {
   });
   window.addEventListener("pagehide", () => {
     ocrController?.clear();
+    engineController?.destroy();
     state.pdfRenderTask?.cancel();
     state.pdfLoadingTask?.destroy();
+  });
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted && state.games[state.selectedGameIndex]) {
+      analyzeCurrentPosition();
+    }
   });
 }
 
 async function init() {
   elements = queryElements();
+  engineController = createEngineController({
+    workerUrl: ENGINE_WORKER_PATH,
+    onState: setEngineState,
+    onAnalysis: receiveEngineAnalysis,
+  });
   ocrController = createOcrController({
     getPdfDocument: () => state.pdfDocument,
     getPageNumber: () => state.pdfSettings.pageNumber,
@@ -1752,6 +1932,7 @@ async function init() {
   updateMoveControls();
   setFileActionLabels();
   setOcrStatus("idle");
+  renderEngineAnalysis();
   await restoreSession();
 }
 

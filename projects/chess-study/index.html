@@ -152,18 +152,67 @@
           </dl>
         </div>
 
-        <div class="board-stage">
-          <div id="chessboard"></div>
-        </div>
+        <div class="board-analysis-layout">
+          <div class="board-primary">
+            <div class="board-shell">
+              <div
+                class="advantage-meter"
+                id="advantage-meter"
+                role="meter"
+                aria-label="Position advantage from White's perspective"
+                data-i18n-aria-label="project.chessStudy.engine.advantageLabel"
+                aria-valuemin="-10"
+                aria-valuemax="10"
+                aria-valuenow="0"
+                aria-valuetext="Equal position"
+              >
+                <span class="advantage-white-fill" id="advantage-white-fill" aria-hidden="true"></span>
+                <output class="advantage-score" id="advantage-score" aria-hidden="true">—</output>
+              </div>
 
-        <p class="board-edit-hint" data-i18n="project.chessStudy.board.editHint">Move a piece to add a legal move. From an earlier position, the move becomes a variation.</p>
+              <div class="board-stage">
+                <div id="chessboard"></div>
+              </div>
+            </div>
 
-        <div class="move-controls" role="group" aria-label="Move navigation">
-          <button class="icon-button" id="move-first" type="button" disabled data-i18n-aria-label="project.chessStudy.board.first" aria-label="Initial position"><span aria-hidden="true">|‹</span></button>
-          <button class="icon-button" id="move-previous" type="button" disabled data-i18n-aria-label="project.chessStudy.board.previous" aria-label="Previous move"><span aria-hidden="true">‹</span></button>
-          <p class="move-status" id="move-status" aria-live="polite">0 / 0</p>
-          <button class="icon-button" id="move-next" type="button" disabled data-i18n-aria-label="project.chessStudy.board.next" aria-label="Next move"><span aria-hidden="true">›</span></button>
-          <button class="icon-button" id="move-last" type="button" disabled data-i18n-aria-label="project.chessStudy.board.last" aria-label="Final position"><span aria-hidden="true">›|</span></button>
+            <p class="board-edit-hint" data-i18n="project.chessStudy.board.editHint">Move a piece to add a legal move. From an earlier position, the move becomes a variation.</p>
+
+            <div class="move-controls" role="group" aria-label="Move navigation">
+              <button class="icon-button" id="move-first" type="button" disabled data-i18n-aria-label="project.chessStudy.board.first" aria-label="Initial position"><span aria-hidden="true">|‹</span></button>
+              <button class="icon-button" id="move-previous" type="button" disabled data-i18n-aria-label="project.chessStudy.board.previous" aria-label="Previous move"><span aria-hidden="true">‹</span></button>
+              <p class="move-status" id="move-status" aria-live="polite">0 / 0</p>
+              <button class="icon-button" id="move-next" type="button" disabled data-i18n-aria-label="project.chessStudy.board.next" aria-label="Next move"><span aria-hidden="true">›</span></button>
+              <button class="icon-button" id="move-last" type="button" disabled data-i18n-aria-label="project.chessStudy.board.last" aria-label="Final position"><span aria-hidden="true">›|</span></button>
+            </div>
+          </div>
+
+          <section class="engine-section" aria-labelledby="engine-heading">
+            <header class="engine-header">
+              <div>
+                <h3 id="engine-heading" data-i18n="project.chessStudy.engine.title">Engine analysis</h3>
+                <p class="engine-status" id="engine-status" aria-live="polite" data-i18n="project.chessStudy.engine.off">Engine off</p>
+              </div>
+              <label class="engine-depth-label">
+                <span data-i18n="project.chessStudy.engine.depth">Depth</span>
+                <select id="engine-depth">
+                  <option value="12">12</option>
+                  <option value="16" selected>16</option>
+                  <option value="20">20</option>
+                </select>
+              </label>
+            </header>
+
+            <div class="engine-result">
+              <div class="engine-evaluation">
+                <output id="engine-evaluation" aria-label="Position evaluation" data-i18n-aria-label="project.chessStudy.engine.evaluation">—</output>
+                <span data-i18n="project.chessStudy.engine.whitePerspective">White's perspective</span>
+              </div>
+              <p class="engine-empty" id="engine-empty" data-i18n="project.chessStudy.engine.empty">Start the engine to calculate the best continuations.</p>
+              <ol class="engine-lines" id="engine-lines" aria-label="Engine principal variations" data-i18n-aria-label="project.chessStudy.engine.linesLabel"></ol>
+            </div>
+
+            <p class="engine-attribution">Stockfish 18 Lite · <span data-i18n="project.chessStudy.engine.local">Runs locally</span></p>
+          </section>
         </div>
 
         <section class="notation-section" aria-labelledby="notation-heading">

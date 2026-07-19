@@ -55,6 +55,17 @@ export default {
           initial: "Start",
           position: "Current position",
         },
+        engine: {
+          title: "Engine analysis",
+          off: "Engine off",
+          depth: "Depth",
+          evaluation: "Position evaluation",
+          whitePerspective: "White's perspective",
+          empty: "Start the engine to calculate the best continuations.",
+          linesLabel: "Engine principal variations",
+          advantageLabel: "Position advantage from White's perspective",
+          local: "Runs locally",
+        },
         book: {
           title: "Book",
           emptyTitle: "No PDF loaded",
@@ -112,7 +123,7 @@ export default {
           architecture: {
             title: "Application architecture",
             p1:
-              "The application remains a static set of HTML, CSS, and ES modules. PDF.js renders local PDF bytes, cm-pgn parses annotated multi-game PGNs, and cm-chessboard displays each parsed FEN position.",
+              "The application remains a static set of HTML, CSS, and ES modules. PDF.js renders local PDF bytes, cm-pgn parses annotated multi-game PGNs, cm-chessboard displays each FEN, and a dedicated Web Worker runs Stockfish analysis without blocking the workspace.",
             p2:
               "A local ONNX recognition pipeline detects printed diagrams on the active PDF page, classifies all 13 square states, and converts reliable reads to FEN. Exact positions open their PGN game; unmatched positions become setup-position games at the end of the study PGN.",
           },
@@ -126,7 +137,7 @@ export default {
           privacy: {
             title: "Local data and persistence",
             p1:
-              "Selected PDF and PGN files are processed in the browser. IndexedDB provides best-effort restoration of the active study, while a clear action removes the stored session.",
+              "Selected PDF and PGN files, diagram recognition, and Stockfish analysis are processed in the browser. IndexedDB provides best-effort restoration of the active study, while a clear action removes the stored session.",
             p2:
               "All imported headers, comments, and filenames are rendered as text rather than executable markup.",
           },
@@ -134,7 +145,7 @@ export default {
             title: "Current limitations",
             items: {
               0: "Diagram recognition targets axis-aligned 2D boards; low-confidence reads are rejected instead of creating an unreliable game.",
-              1: "No engine evaluation or direct editing of PGN headers and comments.",
+              1: "Engine analysis uses a lightweight single-threaded Stockfish build and does not include cloud analysis or tablebases.",
               2: "A generated position defaults to White to move because a diagram alone does not encode the active color or move history.",
               3: "Browser storage may be cleared or evicted by the browser.",
             },
@@ -199,6 +210,17 @@ export default {
           initial: "Início",
           position: "Posição atual",
         },
+        engine: {
+          title: "Análise da engine",
+          off: "Engine desligada",
+          depth: "Profundidade",
+          evaluation: "Avaliação da posição",
+          whitePerspective: "Perspectiva das Brancas",
+          empty: "Inicie a engine para calcular as melhores continuações.",
+          linesLabel: "Variantes principais da engine",
+          advantageLabel: "Vantagem da posição pela perspectiva das Brancas",
+          local: "Executada localmente",
+        },
         book: {
           title: "Livro",
           emptyTitle: "Nenhum PDF carregado",
@@ -256,7 +278,7 @@ export default {
           architecture: {
             title: "Arquitetura da aplicação",
             p1:
-              "A aplicação permanece um conjunto estático de HTML, CSS e módulos ES. PDF.js renderiza os bytes locais do PDF, cm-pgn interpreta PGNs anotados com várias partidas e cm-chessboard exibe cada posição FEN.",
+              "A aplicação permanece um conjunto estático de HTML, CSS e módulos ES. PDF.js renderiza os bytes locais do PDF, cm-pgn interpreta PGNs anotados, cm-chessboard exibe cada FEN e um Web Worker dedicado executa a análise do Stockfish sem bloquear o ambiente.",
             p2:
               "Um pipeline ONNX local detecta diagramas impressos na página atual do PDF, classifica os 13 estados possíveis de cada casa e converte leituras confiáveis em FEN. Posições exatas abrem sua partida no PGN; posições sem correspondência viram partidas com posição inicial ao final do PGN do estudo.",
           },
@@ -270,7 +292,7 @@ export default {
           privacy: {
             title: "Dados locais e persistência",
             p1:
-              "Os arquivos PDF e PGN selecionados são processados no navegador. O IndexedDB oferece restauração de melhor esforço para o estudo ativo, enquanto uma ação de limpeza remove a sessão armazenada.",
+              "Os arquivos PDF e PGN, o reconhecimento de diagramas e a análise do Stockfish são processados no navegador. O IndexedDB oferece restauração de melhor esforço para o estudo ativo, enquanto uma ação de limpeza remove a sessão armazenada.",
             p2:
               "Cabeçalhos, comentários e nomes de arquivos importados são renderizados como texto, nunca como marcação executável.",
           },
@@ -278,7 +300,7 @@ export default {
             title: "Limitações atuais",
             items: {
               0: "O reconhecimento prioriza tabuleiros 2D alinhados; leituras com baixa confiança são rejeitadas em vez de criar uma partida imprecisa.",
-              1: "Sem avaliação por engine ou edição direta de cabeçalhos e comentários do PGN.",
+              1: "A análise usa uma versão leve e single-threaded do Stockfish, sem análise em nuvem ou tablebases.",
               2: "Uma posição gerada usa Brancas como lado a jogar, pois o diagrama sozinho não informa o jogador ativo nem o histórico de lances.",
               3: "O armazenamento pode ser removido pelo navegador.",
             },
