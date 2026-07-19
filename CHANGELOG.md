@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Updated GitHub Actions checkout and Node setup steps to their Node 24-compatible releases, removing the deprecated Node 20 action-runtime warning.
 - Chess Study now recognizes every game in compact PGN databases that omit conventional blank lines between headers, movetext, or adjacent records, and normalizes common zero-based castling notation (`0-0` / `0-0-0`) before parsing.
 - Chess Study PDF clearing, panel-specific drag-and-drop, full-page defaults, and automatic fit behavior now cleanly reset and size the reader.
 
