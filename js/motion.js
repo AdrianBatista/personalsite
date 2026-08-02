@@ -31,7 +31,7 @@ function initSmoothScroll() {
 }
 
 function splitHeroHeadline() {
-  const heading = document.querySelector(".hero-name");
+  const heading = document.querySelector(".hero-name, .service-hero-title");
   if (!heading || typeof window.SplitType !== "function") return;
 
   const fullText = heading.textContent;
@@ -40,9 +40,10 @@ function splitHeroHeadline() {
   const split = new window.SplitType(heading, { types: "words" });
 
   if (window.gsap) {
-    window.gsap.set(split.words, { opacity: 0, y: "0.4em" });
+    // Keep the headline readable from the first paint and if the animation is
+    // interrupted; motion adds position only, never gates the content.
+    window.gsap.set(split.words, { y: "0.4em" });
     window.gsap.to(split.words, {
-      opacity: 1,
       y: "0em",
       duration: 0.7,
       stagger: 0.06,
@@ -66,6 +67,13 @@ function initScrollEntrances() {
     ".tech-group",
     ".timeline-item",
     ".philosophy-quote",
+    ".service-section-head",
+    ".service-card",
+    ".audience-card",
+    ".service-step",
+    ".service-note",
+    ".service-faq details",
+    ".service-cta-panel",
   ];
 
   groups.forEach((selector) => {

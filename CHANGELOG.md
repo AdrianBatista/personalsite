@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Added a bilingual residential electrical design service hub for Jundiaí and three intent-specific landing pages for professional partners, construction/renovation homeowners, and planned new electrical loads.
 - Initial repository setup: website vision document ([instructions.md](instructions.md)), AI agent configuration ([AGENTS.md](AGENTS.md), [.github/copilot-instructions.md](.github/copilot-instructions.md)), CI linting workflow, issue/PR templates.
 - Scaffolded the site as a single scrolling page (`index.html`) covering Home, About, Engineering Portfolio, Publications & Studies, Technologies, Experience, Philosophy, and Contact, per instructions.md's Site Structure.
 - Bilingual EN/PT content via `js/i18n.js`, with language resolved from a `?language=` query param, `localStorage`, or browser locale, plus a nav-bar toggle.

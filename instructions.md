@@ -301,6 +301,23 @@ Minimal.
 
 ---
 
+## Residential Electrical Design Services
+
+A dedicated commercial branch within the personal site, without changing the primary positioning around engineering software.
+
+The service area starts in **Jundiaí/SP** and the initial offer is limited to residential electrical design, without installation work. The content must identify Adrian as an Electrical Engineer registered with CREA-SP, distinguish design responsibility from execution, and avoid promises of automatic approval or generic compliance.
+
+Pages:
+
+- General residential electrical design page;
+- Partner version for architects, interior designers, civil engineers, and small builders;
+- Homeowner version for new construction and major renovation;
+- Homeowner version for planned new electrical loads, subject to technical screening and possible site survey.
+
+All four pages must use technical, documentation-like language, honest proof, a controlled-capacity message, and a direct scope-analysis call to action. They must not present academic work as a completed real-world installation.
+
+---
+
 # Tone of Voice
 
 Professional.

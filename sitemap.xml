@@ -39,6 +39,42 @@
   </url>
 
   <url>
+    <loc>https://adrianbatista.com/servicos/projetos-eletricos-residenciais/</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://adrianbatista.com/servicos/projetos-eletricos-residenciais/?language=en"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://adrianbatista.com/servicos/projetos-eletricos-residenciais/?language=pt"/>
+  </url>
+
+  <url>
+    <loc>https://adrianbatista.com/servicos/projetos-eletricos-residenciais/parceiros/</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://adrianbatista.com/servicos/projetos-eletricos-residenciais/parceiros/?language=en"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://adrianbatista.com/servicos/projetos-eletricos-residenciais/parceiros/?language=pt"/>
+  </url>
+
+  <url>
+    <loc>https://adrianbatista.com/servicos/projetos-eletricos-residenciais/construcao-reforma/</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://adrianbatista.com/servicos/projetos-eletricos-residenciais/construcao-reforma/?language=en"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://adrianbatista.com/servicos/projetos-eletricos-residenciais/construcao-reforma/?language=pt"/>
+  </url>
+
+  <url>
+    <loc>https://adrianbatista.com/servicos/projetos-eletricos-residenciais/novas-cargas/</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://adrianbatista.com/servicos/projetos-eletricos-residenciais/novas-cargas/?language=en"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://adrianbatista.com/servicos/projetos-eletricos-residenciais/novas-cargas/?language=pt"/>
+  </url>
+
+  <url>
     <loc>https://adrianbatista.com/projects/net-salary-calculator/article.html</loc>
     <lastmod>2026-07-11</lastmod>
     <changefreq>monthly</changefreq>

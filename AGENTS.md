@@ -56,6 +56,12 @@ index.html             # Single page: hero + About, Portfolio, Publications,
                         # Technologies, Experience, Philosophy, Contact sections
 articles/
   index.html           # Bilingual index of project articles
+servicos/
+  projetos-eletricos-residenciais/
+    index.html         # General residential electrical design service page
+    parceiros/         # Landing page for professional partners
+    construcao-reforma/ # Landing page for homeowners planning construction/renovation
+    novas-cargas/      # Landing page for planned new electrical loads
 projects/
   index.html           # Project index
   net-salary-calculator/ # Git submodule: calculator interface and documentation
@@ -65,10 +71,12 @@ projects/
 css/
   tokens.css            # Design tokens (dark theme palette, spacing, fluid type)
   main.css              # Layout, components, responsive nav, motion guards
+  service.css           # Shared layout for residential electrical design pages
 js/
   main.js               # Module entry point (init order: i18n → nav → motion)
   i18n.js               # EN/PT translation dictionary + language resolution/toggle
   motion.js             # Lenis smooth scroll, GSAP + ScrollTrigger entrances, SplitType
+  service-i18n.js       # EN/PT copy for all residential electrical design pages
 .stylelintrc.json       # Minimal config (no rules) so `npx stylelint` runs without error
 ```
 

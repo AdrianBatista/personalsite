@@ -555,7 +555,7 @@ ol {
 
 /* ---------- Responsive nav ---------- */
 
-@media (max-width: 48rem) {
+@media (max-width: 68rem) {
   .nav-toggle {
     display: flex;
   }

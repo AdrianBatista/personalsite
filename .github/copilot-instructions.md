@@ -73,6 +73,7 @@ This matrix will grow once the site is scaffolded. Update it whenever a change i
 |---|---|
 | Brand positioning, tagline, or tone rules | [instructions.md](../instructions.md) first, then any page copy that quotes it, then this file if conventions changed |
 | Site navigation / page list | Nav markup on every page (header includes in both [index.html](../index.html) and subproject pages), the "Planned" structure list in [AGENTS.md](../AGENTS.md), and instructions.md's Site Structure section |
+| Residential electrical service content | All four pages under `servicos/projetos-eletricos-residenciais/`, `js/service-i18n.js`, `css/service.css`, sitemap entries, and the marketing plan |
 | Color palette / theme tokens | `css/tokens.css` custom properties, then any hardcoded colors in inline `<style>` blocks; subproject pages inherit tokens automatically |
 | Motion/animation conventions | [.github/skills/premium-frontend-ui/SKILL.md](skills/premium-frontend-ui/SKILL.md) usage notes above, and any existing animation modules under `js/` |
 | Subproject layout components | `css/subproject.css`, then update [.github/SUBPROJECT_LAYOUT_GUIDE.md](.github/SUBPROJECT_LAYOUT_GUIDE.md) and test the example in [projects/net-salary-calculator/index.html](../projects/net-salary-calculator/index.html) |
