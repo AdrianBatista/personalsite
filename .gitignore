@@ -24,6 +24,7 @@ dist/
 build/
 .next/
 out/
+vercel-output/
 
 # Vendored PDF.js runtime required by the Chess Study static deployment.
 !projects/chess-study/vendor/

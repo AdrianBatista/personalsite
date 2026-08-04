@@ -1,4 +1,4 @@
 {
-  "buildCommand": "git -c \"url.https://x-access-token:${GITHUB_SUBMODULE_TOKEN}@github.com/.insteadOf=https://github.com/\" submodule update --init --recursive",
-  "outputDirectory": "."
+  "buildCommand": "git -c \"url.https://x-access-token:${GITHUB_SUBMODULE_TOKEN}@github.com/.insteadOf=https://github.com/\" submodule update --init --recursive && mkdir -p vercel-output && cp -R articles assets css js projects servicos ads.txt index.html robots.txt sitemap.xml vercel-output/",
+  "outputDirectory": "vercel-output"
 }
